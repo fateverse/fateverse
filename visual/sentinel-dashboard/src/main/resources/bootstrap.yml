@@ -1,0 +1,48 @@
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+  reactive:
+    session:
+      cookie:
+        name: sentinel_dashboard_cookie
+  port: 5000
+
+spring:
+  application:
+    name: sentinel-dashboard
+  profiles:
+    active: local
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        namespace: pro
+        username: nacos
+        password: nacos
+      config:
+        enabled: false
+
+
+logging:
+  level:
+    org:
+      springframework:
+        web: info
+  file:
+    name: ${user.home}/logs/csp/sentinel-dashboard.log
+  pattern:
+    file: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
+
+auth:
+  username: sentinel
+  password: sentinel
+  filter:
+    exclude-urls: /,/auth/login,/auth/logout,/registry/machine,/version,/actuator/**,/details
+    exclude-url-suffixes: htm,html,js,css,map,ico,ttf,woff,png
+
+sentinel:
+  dashboard:
+    version: 1.0.0

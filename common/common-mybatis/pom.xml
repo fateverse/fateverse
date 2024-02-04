@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>common</artifactId>
+        <groupId>cn.fateverse</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>common-mybatis</artifactId>
+
+    <description>common-mybatis相关依赖</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <dameng.version>8.1.2.141</dameng.version>
+    </properties>
+
+    <dependencies>
+        <!-- Java Servlet -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!-- Mysql驱动包 -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>com.oracle</groupId>-->
+        <!--            <artifactId>ojdbc6</artifactId>-->
+        <!--            <version>11.2.0.4</version>-->
+        <!--        </dependency>-->
+
+        <!-- 达梦驱动包 必须次版本才能适配sharding-jdbc-->
+        <dependency>
+            <groupId>com.dameng</groupId>
+            <artifactId>DmJdbcDriver18</artifactId>
+            <version>${dameng.version}</version>
+        </dependency>
+        <!--mybatis相关配置-->
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+        </dependency>
+        <!--pagehelper分页插件-->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+        </dependency>
+        <!-- Common Core 核心依赖 -->
+        <dependency>
+            <groupId>cn.fateverse</groupId>
+            <artifactId>common-core</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

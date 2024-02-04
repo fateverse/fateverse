@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.fateverse.code.mapper.TableColumnMapper">
+
+    <select id="selectListByTableId" resultType="cn.fateverse.code.entity.TableColumn">
+        select column_id,
+               table_id,
+               column_name,
+               column_comment,
+               column_type,
+               column_length,
+               column_scale,
+               java_type,
+               java_field,
+               is_pk,
+               is_increment,
+               is_required,
+               is_insert,
+               is_edit,
+               is_list,
+               is_query,
+               is_regular,
+               query_type,
+               html_type,
+               dict_type,
+               sort,
+               create_by,
+               create_time,
+               update_by,
+               update_time from gen_table_column where table_id = #{tableId}
+    </select>
+
+    <insert id="insert">
+        insert into gen_table_column
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tableId != null and tableId != ''">table_id,</if>
+            <if test="columnName != null and columnName != ''">column_name,</if>
+            <if test="columnComment != null and columnComment != ''">column_comment,</if>
+            <if test="columnType != null and columnType != ''">column_type,</if>
+            <if test="columnLength != null and columnLength != 0">column_length,</if>
+            <if test="columnScale != null and columnScale != 0">column_scale,</if>
+            <if test="javaType != null and javaType != ''">java_type,</if>
+            <if test="javaField != null  and javaField != ''">java_field,</if>
+            <if test="isPk != null and isPk != ''">is_pk,</if>
+            <if test="isIncrement != null and isIncrement != ''">is_increment,</if>
+            <if test="isRequired != null and isRequired != ''">is_required,</if>
+            <if test="isRegular != null and isRegular != ''">is_regular,</if>
+            <if test="isInsert != null and isInsert != ''">is_insert,</if>
+            <if test="isEdit != null and isEdit != ''">is_edit,</if>
+            <if test="isList != null and isList != ''">is_list,</if>
+            <if test="isQuery != null and isQuery != ''">is_query,</if>
+            <if test="queryType != null and queryType != ''">query_type,</if>
+            <if test="htmlType != null and htmlType != ''">html_type,</if>
+            <if test="dictType != null">dict_type,</if>
+            <if test="sort != null">sort,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tableId != null and tableId != ''">#{tableId},</if>
+            <if test="columnName != null and columnName != ''">#{columnName},</if>
+            <if test="columnComment != null and columnComment != ''">#{columnComment},</if>
+            <if test="columnType != null and columnType != ''">#{columnType},</if>
+            <if test="columnLength != null and columnLength != 0">#{columnLength},</if>
+            <if test="columnScale != null and columnScale != 0">#{columnScale},</if>
+            <if test="javaType != null and javaType != ''">#{javaType},</if>
+            <if test="javaField != null and javaField != ''">#{javaField},</if>
+            <if test="isPk != null and isPk != ''">#{isPk},</if>
+            <if test="isIncrement != null and isIncrement != ''">#{isIncrement},</if>
+            <if test="isRequired != null and isRequired != ''">#{isRequired},</if>
+            <if test="isRegular != null and isRegular != ''">#{isRegular},</if>
+            <if test="isInsert != null and isInsert != ''">#{isInsert},</if>
+            <if test="isEdit != null and isEdit != ''">#{isEdit},</if>
+            <if test="isList != null and isList != ''">#{isList},</if>
+            <if test="isQuery != null and isQuery != ''">#{isQuery},</if>
+            <if test="queryType != null and queryType != ''">#{queryType},</if>
+            <if test="htmlType != null and htmlType != ''">#{htmlType},</if>
+            <if test="dictType != null">#{dictType},</if>
+            <if test="sort != null">#{sort},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <insert id="batchInsert">
+        insert into gen_table_column (
+        table_id,
+        column_name,
+        column_comment,
+        column_type,
+        column_length,
+        column_scale,
+        java_type,
+        java_field,
+        is_pk,
+        is_increment,
+        is_required,
+        is_insert,
+        is_edit,
+        is_list,
+        is_query,
+        is_regular,
+        query_type,
+        html_type,
+        dict_type,
+        sort,
+        create_by,
+        create_time) values
+        <foreach collection="list" separator="," item="column">
+            (#{column.tableId},
+            #{column.columnName},
+            #{column.columnComment},
+            #{column.columnType},
+            #{column.columnLength},
+            #{column.columnScale},
+            #{column.javaType},
+            #{column.javaField},
+            #{column.isPk},
+            #{column.isIncrement},
+            #{column.isRequired},
+            #{column.isInsert},
+            #{column.isEdit},
+            #{column.isList},
+            #{column.isQuery},
+            #{column.isRegular},
+            #{column.queryType},
+            #{column.htmlType},
+            #{column.dictType},
+            #{column.sort},
+            #{column.createBy},
+            #{column.createTime})
+        </foreach>
+    </insert>
+
+    <update id="update">
+        update gen_table_column
+        <set>
+            <if test="tableId != null and tableId != ''">table_id = #{tableId},</if>
+            <if test="columnName != null and columnName != ''">`column_name` = #{columnName},</if>
+            <if test="columnComment != null and columnComment != ''">column_comment=#{columnComment},</if>
+            <if test="columnType != null and columnType != ''">column_type=#{columnType},</if>
+            <if test="columnLength != null and columnLength != ''">column_length=#{columnLength},</if>
+            <if test="columnScale != null and columnScale != ''">column_scale=#{columnScale},</if>
+            <if test="javaType != null and javaType != ''">java_type=#{javaType},</if>
+            <if test="javaField != null and javaField != ''">java_field=#{javaField},</if>
+            <if test="isPk != null and isPk != ''">is_pk=#{isPk},</if>
+            <if test="isIncrement != null and isIncrement != ''">is_increment=#{isIncrement},</if>
+            <if test="isRequired != null and isRequired != ''">is_required=#{isRequired},</if>
+            <if test="isRegular != null and isRegular != ''">is_regular=#{isRegular},</if>
+            <if test="isInsert != null and isInsert != ''">is_insert=#{isInsert},</if>
+            <if test="isEdit != null and isEdit != ''">is_edit=#{isEdit},</if>
+            <if test="isList != null and isList != ''">is_list=#{isList},</if>
+            <if test="isQuery != null and isQuery != ''">is_query=#{isQuery},</if>
+            <if test="queryType != null and queryType != ''">query_type=#{queryType},</if>
+            <if test="htmlType != null and htmlType != ''">html_type=#{htmlType},</if>
+            <if test="dictType != null">dict_type=#{dictType},</if>
+            <if test="sort != null">sort=#{sort},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </set>
+        where column_id = #{columnId}
+    </update>
+
+    <update id="batchUpdate">
+        update gen_table_column
+        <set>
+            <trim prefix="column_comment = case" suffix="end,">
+                <foreach collection="list" separator=" " item="item">
+                    <if test="item.columnComment != null">
+                        when column_id = #{item.columnId} then #{item.columnComment}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="column_type = case" suffix="end,">
+                <foreach collection="list" separator=" " item="item">
+                    <if test="item.columnType != null">
+                        when column_id = #{item.columnId} then #{item.columnType}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="java_type = case" suffix="end,">
+                <foreach collection="list" separator=" " item="item">
+                    <if test="item.javaType != null">
+                        when column_id = #{item.columnId} then #{item.javaType}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="java_field = case" suffix="end,">
+                <foreach collection="list" separator=" " item="item">
+                    <if test="item.javaField != null">
+                        when column_id = #{item.columnId} then #{item.javaField}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="is_pk = case" suffix="end,">
+                <foreach collection="list" separator=" " item="item">
+                    <if test="item.isPk != null and item.isPk != ''">
+                        when column_id = #{item.columnId} then #{item.isPk}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="is_increment = case" suffix="end,">
+                <foreach collection="list" separator=" " item="item">
+                    <if test="item.isIncrement != null and item.isIncrement != ''">
+                        when column_id = #{item.columnId} then #{item.isIncrement}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="is_required = case" suffix="end,">
+                <foreach collection="list" separator=" " item="item">
+                    <if test="item.isRequired != null and item.isRequired != ''">
+                        when column_id = #{item.columnId} then #{item.isRequired}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="is_regular = case" suffix="end,">
+                <foreach collection="list" separator=" " item="item">
+                    <if test="item.isRegular != null and item.isRegular != ''">
+                        when column_id = #{item.columnId} then #{item.isRegular}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="is_insert = case" suffix="end,">
+                <foreach collection="list" separator=" " item="item">
+                    <if test="item.isInsert != null and item.isInsert != ''">
+                        when column_id = #{item.columnId} then #{item.isInsert}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="is_edit = case" suffix="end,">
+                <foreach collection="list" separator=" " item="item">
+                    <if test="item.isEdit != null and item.isEdit != ''">
+                        when column_id = #{item.columnId} then #{item.isEdit}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="is_list = case" suffix="end,">
+                <foreach collection="list" separator=" " item="item">
+                    <if test="item.isList != null and item.isList != ''">
+                        when column_id = #{item.columnId} then #{item.isList}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="is_query = case" suffix="end,">
+                <foreach collection="list" separator=" " item="item">
+                    <if test="item.isQuery != null and item.isQuery != ''">
+                        when column_id = #{item.columnId} then #{item.isQuery}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="query_type = case" suffix="end,">
+                <foreach collection="list" separator=" " item="item">
+                    <if test="item.queryType != null and item.queryType != ''">
+                        when column_id = #{item.columnId} then #{item.queryType}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="html_type = case" suffix="end,">
+                <foreach collection="list" separator=" " item="item">
+                    <if test="item.htmlType != null and item.htmlType != ''">
+                        when column_id = #{item.columnId} then #{item.htmlType}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="dict_type = case" suffix="end,">
+                <foreach collection="list" separator=" " item="item">
+                    <if test="item.dictType != null and item.dictType != ''">
+                        when column_id = #{item.columnId} then #{item.dictType}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="update_by = case" suffix="end,">
+                <foreach collection="list" separator=" " item="item">
+                    <if test="item.updateBy != null and item.updateBy != ''">
+                        when column_id = #{item.columnId} then #{item.updateBy}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="update_time = case" suffix="end,">
+                <foreach collection="list" separator=" " item="item">
+                    <if test="item.updateTime != null">
+                        when column_id = #{item.columnId} then #{item.updateTime}
+                    </if>
+                </foreach>
+            </trim>
+        </set>
+        where column_id in
+        <foreach collection="list" item="item" index="index"
+                 separator="," open="(" close=")">
+            #{item.columnId}
+        </foreach>
+    </update>
+
+
+    <delete id="deleteByTableIds" parameterType="Long">
+        delete from gen_table_column where table_id in
+        <foreach collection="array" item="tableId" open="(" separator="," close=")">
+            #{tableId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByTableId" parameterType="Long">
+        delete
+        from gen_table_column
+        where table_id = #{tableId}
+    </delete>
+
+    <delete id="batchRemove">
+        delete from gen_table_column where column_id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>visual</artifactId>
+        <groupId>cn.fateverse</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>code-gen</artifactId>
+    <description>代码生成模块</description>
+
+    <properties>
+        <velocity.version>1.7</velocity.version>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
+    <dependencies>
+        <!--velocity代码生成使用模板-->
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>${velocity.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.fateverse</groupId>
+            <artifactId>common-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.fateverse</groupId>
+            <artifactId>common-swagger</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.fateverse</groupId>
+            <artifactId>common-log</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.fateverse</groupId>
+            <artifactId>common-mybatis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.fateverse</groupId>
+            <artifactId>common-excel</artifactId>
+        </dependency>
+    </dependencies>
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.7.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

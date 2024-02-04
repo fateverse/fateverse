@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.fateverse.log.mapper.LoginInfoMapper">
+    <resultMap type="cn.fateverse.log.entity.LoginInfo" id="LoginInfoResult">
+        <id property="infoId" column="info_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="ipddr" column="ipaddr"/>
+        <result property="loginLocation" column="login_location"/>
+        <result property="browser" column="browser"/>
+        <result property="os" column="os"/>
+        <result property="state" column="state"/>
+        <result property="msg" column="msg"/>
+        <result property="loginTime" column="login_time"/>
+    </resultMap>
+
+    <insert id="save" parameterType="cn.fateverse.log.entity.LoginInfo">
+        insert into sys_login_infor
+        (info_id, user_name, ipaddr, login_location, browser, os, state, msg, login_time)
+        values
+        (#{infoId}, #{userName}, #{ipddr}, #{loginLocation}, #{browser}, #{os}, #{state}, #{msg}, #{loginTime})
+    </insert>
+    <select id="search" resultMap="LoginInfoResult"
+            parameterType="cn.fateverse.log.query.LoginLogQuery">
+        select info_id, user_name, ipaddr, login_location, browser, os, state, msg, login_time
+        from sys_login_infor
+        <where>
+            <if test="ipAddr !=null and ipAddr !=''">
+                and ipaddr like concat('%',#{ipAddr},'%')
+            </if>
+            <if test="userName !=null and userName !=''">
+                and user_name like concat('%',#{userName},'%')
+            </if>
+            <if test="state !=null and state !=''">
+                and state = #{state}
+            </if>
+            <if test="startTime !=null">
+                and login_time between #{startTime} and  #{endTime}
+            </if>
+        </where>
+        order by login_time desc
+    </select>
+
+    <delete id="delete" parameterType="String">
+        delete from sys_login_infor where info_id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectById" resultMap="LoginInfoResult">
+        select info_id, user_name, ipaddr, login_location, browser, os, state, msg, login_time
+        from sys_login_infor
+        where info_id =#{infoId}
+    </select>
+
+</mapper>

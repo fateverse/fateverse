@@ -1,0 +1,77 @@
+package ${packageName}.entity.dto;
+
+import ${packageName}.entity.${ClassName};
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+#if($table.isRequired())
+import javax.validation.constraints.NotNull;
+#end
+#if($table.isRegular())
+import javax.validation.constraints.Pattern;
+#end
+#if($table.hasDateDto())
+
+import java.util.Date;
+#end
+
+/**
+ * ${functionName}对象 ${tableName}
+ *
+ * @author ${author}
+ * @date ${dateTime}
+ */
+@Data
+@ApiModel("${functionName}Dto")
+public class ${ClassName}Dto {
+
+    /**
+     * ${pkColumn.columnComment}
+     */
+    @ApiModelProperty("${pkColumn.columnComment}")
+    private $pkColumn.javaType $pkColumn.javaField;
+#foreach ($column in $columns)
+#if($column.from())
+
+    /**
+     * $column.columnComment
+     */
+#if($column.required())
+    @NotNull(message = "${column.columnComment}不能为空!")
+#end
+#if($column.isRegular())
+    @Pattern(regexp = "${column.regular}",message = "${column.columnComment}格式错误!")
+#end
+    @ApiModelProperty("${column.columnComment}")
+    private $column.javaType $column.javaField;
+#end
+#end
+
+    public ${ClassName} to${ClassName}() {
+#if($table.hasDateDto())
+    ${ClassName} build = ${ClassName}.builder()
+        .${pkColumn.javaField}(${pkColumn.javaField})
+#foreach ($column in $columns)
+#if((1 == $column.isEdit || 1 == $column.isInsert) && !($table.isEntityTime(${column.javaField})))
+            .${column.javaField}(${column.javaField})
+#end
+#end
+        .build();
+#foreach ($column in $columns)
+#if((1 == $column.isEdit || 1 == $column.isInsert) && $table.isEntityTime(${column.javaField}))
+        build.set${table.capitalize(${column.javaField})}(${column.javaField});
+#end
+#end
+        return build;
+#else
+        return ${ClassName}.builder()
+            .${pkColumn.javaField}(${pkColumn.javaField})
+#foreach ($column in $columns)
+#if(1 == $column.isEdit || 1 == $column.isInsert)
+            .${column.javaField}(${column.javaField})
+#end
+#end
+            .build();
+#end
+    }
+}

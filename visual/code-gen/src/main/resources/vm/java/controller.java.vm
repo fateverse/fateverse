@@ -1,0 +1,106 @@
+package ${packageName}.controller;
+
+import ${packageName}.entity.dto.${ClassName}Dto;
+import ${packageName}.entity.query.${ClassName}Query;
+import ${packageName}.entity.vo.${ClassName}Vo;
+import ${packageName}.service.${ClassName}Service;
+import cn.fateverse.common.core.result.Result;
+#if($table.hasOptionApi())
+import cn.fateverse.common.core.entity.Option;
+#end
+import cn.fateverse.common.core.result.page.TableDataInfo;
+import cn.fateverse.common.core.utils.ObjectUtils;
+import cn.fateverse.common.log.annotation.Log;
+import cn.fateverse.common.log.enums.BusinessType;
+import cn.fateverse.common.excel.utils.ExcelUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * ${functionName} Controller
+ *
+ * @author ${author}
+ * @date ${dateTime}
+ */
+@Api(value = "${functionName}管理",tags = "${functionName}管理")
+@RestController
+@RequestMapping("/${moduleName}/${businessName}")
+public class ${ClassName}Controller {
+
+    private final ${ClassName}Service ${className}Service;
+
+    public ${ClassName}Controller(${ClassName}Service ${className}Service) {
+        this.${className}Service = ${className}Service;
+    }
+
+
+    @ApiOperation("获取${functionName}列表")
+    @GetMapping
+    @PreAuthorize("@ss.hasPermission('${permissionPrefix}:list')")
+    public Result<TableDataInfo<${ClassName}Vo>> list(${ClassName}Query query) {
+        TableDataInfo<${ClassName}Vo> dataInfo = ${className}Service.searchList(query);
+        return Result.ok(dataInfo);
+    }
+
+#if($table.hasOptionApi())
+    @ApiOperation("获取校验规则option")
+    @GetMapping("/option")
+    public Result<List<Option>> option(){
+        List<Option> options = ${className}Service.searchOptionList();
+        return Result.ok(options);
+    }
+#end
+
+    @ApiOperation("导出excel数据")
+    @GetMapping("/export")
+    @PreAuthorize("@ss.hasPermission('${permissionPrefix}:export')")
+    public void export(${ClassName}Query query){
+        List<${ClassName}Vo> list = ${className}Service.exportList(query);
+        ExcelUtil.exportExcel(list,${ClassName}Vo.class);
+    }
+
+    @ApiOperation("获取${functionName}详细信息")
+    @GetMapping("/{${pkColumn.javaField}}")
+    @PreAuthorize("@ss.hasPermission('${permissionPrefix}:info')")
+    public Result<${ClassName}Vo> info(@PathVariable ${pkColumn.javaType} ${pkColumn.javaField}) {
+        ObjectUtils.checkPk(${pkColumn.javaField});
+        ${ClassName}Vo ${className} = ${className}Service.searchById(${pkColumn.javaField});
+        return Result.ok(${className});
+    }
+
+
+    @ApiOperation("新增${functionName}")
+    @PostMapping
+    @Log(title = "新增${functionName}",businessType = BusinessType.INSERT)
+    @PreAuthorize("@ss.hasPermission('${permissionPrefix}:add')")
+    public Result<Void> add(@RequestBody @Validated ${ClassName}Dto ${className}){
+        ${className}Service.save(${className});
+        return Result.ok();
+    }
+
+    @ApiOperation("修改${functionName}")
+    @PutMapping
+    @Log(title = "修改${functionName}",businessType = BusinessType.UPDATE)
+    @PreAuthorize("@ss.hasPermission('${permissionPrefix}:edit')")
+    public Result<Void> edit(@RequestBody @Validated ${ClassName}Dto ${className}){
+        ObjectUtils.checkPk(${className}.get${table.capitalize(${pkColumn.javaField})}());
+        ${className}Service.edit(${className});
+        return Result.ok();
+    }
+
+    @ApiOperation("删除${functionName}")
+    @DeleteMapping("/{${pkColumn.javaField}List}")
+    @Log(title = "删除${functionName}",businessType = BusinessType.DELETE)
+    @PreAuthorize("@ss.hasPermission('${permissionPrefix}:del')")
+    public Result<Void> batchDel(@PathVariable List<${pkColumn.javaType}> ${pkColumn.javaField}List){
+        ObjectUtils.checkPkList(${pkColumn.javaField}List);
+        ${className}Service.removeBatch(${pkColumn.javaField}List);
+        return Result.ok();
+    }
+
+}

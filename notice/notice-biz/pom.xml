@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>notice</artifactId>
+        <groupId>cn.fateverse</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>notice-biz</artifactId>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
+    <dependencies>
+        <!--通用模块-->
+        <dependency>
+            <groupId>cn.fateverse</groupId>
+            <artifactId>common-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.fateverse</groupId>
+            <artifactId>common-mybatis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.fateverse</groupId>
+            <artifactId>common-log</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.fateverse</groupId>
+            <artifactId>common-swagger</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.fateverse</groupId>
+            <artifactId>notice-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.fateverse</groupId>
+            <artifactId>common-websocket</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.fateverse</groupId>
+            <artifactId>common-file</artifactId>
+        </dependency>
+        <!--rabbitmq-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.fateverse</groupId>
+            <artifactId>common-excel</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.7.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.fateverse.admin.mapper.DictTypeMapper">
+
+    <resultMap id="DictTypeResult" type="cn.fateverse.admin.entity.DictType">
+        <id property="dictId" column="dict_id"/>
+        <result property="dictName" column="dict_name"/>
+        <result property="dictType" column="dict_type"/>
+        <result property="state" column="state"/>
+        <result property="remark" column="remark"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+
+    <sql id="selectDict">
+        select dict_id,
+               dict_name,
+               dict_type,
+               state,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from sys_dict_type
+    </sql>
+
+    <select id="selectList" resultMap="DictTypeResult">
+        <include refid="selectDict"/>
+        <where>
+            <if test="dictName != null and dictName != ''">and dict_name like concat('%',#{dictName},'%')</if>
+            <if test="dictType != null and dictType != ''">and dict_type like concat('%',#{dictType},'%')</if>
+            <if test="state != null and state != ''">and state = #{state}</if>
+            <if test="startTime != null and endTime != null">
+                and create_time &gt;= #{startTime}
+            </if>
+            <if test="startTime != null and endTime != null">
+                and create_time &gt;= #{endTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByDictId" resultMap="DictTypeResult">
+        <include refid="selectDict"/>
+        where dict_id = #{dictId}
+    </select>
+    <select id="selectByDictType" resultMap="DictTypeResult">
+        <include refid="selectDict"/>
+        where dict_type = #{dictType}
+    </select>
+
+    <insert id="insert">
+        insert into sys_dict_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dictName != null and dictName != ''"> dict_name, </if>
+            <if test="dictType != null and dictType != ''"> dict_type, </if>
+            <if test="state != null and state != ''"> state, </if>
+            <if test="remark != null and remark != ''"> remark, </if>
+            <if test="createBy != null and createBy != ''"> create_by, </if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dictName != null and dictName != ''"> #{dictName}, </if>
+            <if test="dictType != null and dictType != ''"> #{dictType}, </if>
+            <if test="state != null and state != ''"> #{state}, </if>
+            <if test="remark != null and remark != ''"> #{remark}, </if>
+            <if test="createBy != null and createBy != ''"> #{createBy}, </if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="update">
+        update sys_dict_type
+        <set>
+            <if test="dictName != null and dictName != ''"> dict_name = #{dictName}, </if>
+            <if test="dictType != null and dictType != ''"> dict_type = #{dictType}, </if>
+            <if test="state != null and state != ''"> state = #{state}, </if>
+            <if test="remark != null and remark != ''"> remark = #{remark}, </if>
+            <if test="updateBy != null and updateBy != ''"> update_by = #{updateBy}, </if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </set>
+        where dict_id = #{dictId}
+    </update>
+
+    <delete id="deleteById">
+        delete from sys_dict_type where dict_id = #{dictId}
+    </delete>
+
+</mapper>

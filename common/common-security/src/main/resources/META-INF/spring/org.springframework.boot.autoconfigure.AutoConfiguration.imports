@@ -1,0 +1,3 @@
+cn.fateverse.common.security.configure.SecurityCloudConfiguration
+cn.fateverse.common.security.configure.CorsFilterConfiguration
+cn.fateverse.common.security.configure.WebMvcConfiguration

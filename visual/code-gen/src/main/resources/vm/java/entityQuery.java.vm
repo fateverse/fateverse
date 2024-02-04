@@ -1,0 +1,59 @@
+package ${packageName}.entity.query;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+#if($table.hasDateQuery())
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
+#end
+
+/**
+ * ${functionName}对象 ${tableName}
+ *
+ * @author ${author}
+ * @date ${dateTime}
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ApiModel("${functionName}Query")
+public class ${ClassName}Query {
+#foreach ($column in $columns)
+#if($column.query())
+#if("BETWEEN" != $column.queryType)
+
+    /**
+     * $column.columnComment
+     */
+    @ApiModelProperty("${column.columnComment}")
+#if($column.javaType.equals("Date"))
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+#end
+    private $column.javaType $column.javaField;
+#else
+
+    /**
+     * $column.columnComment 开始
+     */
+    @ApiModelProperty("${column.columnComment}开始")
+#if($column.javaType.equals("Date"))
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+#end
+    private $column.javaType begin${table.capitalize($column.javaField)};
+
+    /**
+     * $column.columnComment 结束
+     */
+    @ApiModelProperty("${column.columnComment}结束")
+#if($column.javaType.equals("Date"))
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+#end
+    private $column.javaType end${table.capitalize($column.javaField)};
+#end
+#end
+#end
+}

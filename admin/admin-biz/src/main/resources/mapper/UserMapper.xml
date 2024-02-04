@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.fateverse.admin.mapper.UserMapper">
+
+	<resultMap type="cn.fateverse.admin.entity.User" id="UserResult">
+		<id     property="userId"       column="user_id"      />
+		<result property="deptId"       column="dept_id"      />
+		<result property="userName"     column="user_name"    />
+		<result property="nickName"     column="nick_name"    />
+		<result property="email"        column="email"        />
+		<result property="phoneNumber"  column="phone_number"  />
+		<result property="sex"          column="sex"          />
+		<result property="avatar"       column="avatar"       />
+		<result property="password"     column="password"     />
+		<result property="state"       column="state"       />
+		<result property="delFlag"      column="del_flag"     />
+		<result property="loginIp"      column="login_ip"     />
+		<result property="loginDate"    column="login_date"   />
+		<result property="createBy"     column="create_by"    />
+		<result property="createTime"   column="create_time"  />
+		<result property="updateBy"     column="update_by"    />
+		<result property="updateTime"   column="update_time"  />
+		<result property="remark"       column="remark"       />
+		<result property="userType"     column="user_type"    />
+		<result property="openId"       column="open_id"      />
+		<result property="unionId"      column="union_id"     />
+		<association property="dept" column="dept_id" javaType="cn.fateverse.admin.entity.Dept" resultMap="deptResult" />
+		<collection  property="roles"   javaType="java.util.List"        resultMap="RoleResult" />
+	</resultMap>
+
+	<resultMap id="deptResult" type="cn.fateverse.admin.entity.Dept">
+		<id     property="deptId"   column="dept_id"     />
+		<result property="parentId" column="parent_id"   />
+		<result property="deptName" column="dept_name"   />
+		<result property="ancestors" column="ancestors"   />
+		<result property="orderNum" column="order_num"   />
+		<result property="leader"   column="leader"      />
+		<result property="leaderId" column="leader_id"   />
+		<result property="state"   column="dept_state"   />
+	</resultMap>
+
+	<resultMap id="RoleResult" type="cn.fateverse.admin.entity.Role">
+		<id     property="roleId"       column="role_id"        />
+		<result property="roleName"     column="role_name"      />
+		<result property="roleKey"      column="role_key"       />
+		<result property="roleSort"     column="role_sort"      />
+		<result property="dataScope"    column="data_scope"    />
+		<result property="state"        column="role_state"    />
+	</resultMap>
+
+	<sql id="selectUserDetail">
+		select u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.avatar, u.phone_number, u.password, u.sex, u.state, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, u.union_id,u.open_id,u.user_type,
+			   d.dept_id, d.parent_id, d.dept_name, d.order_num, d.ancestors, d.leader, d.leader_id, d.state as dept_state,
+			   r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.state as role_state
+		from sys_user u
+				 left join sys_dept d on u.dept_id = d.dept_id
+				 left join sys_user_role ur on u.user_id = ur.user_id
+				 left join sys_role r on r.role_id = ur.role_id
+	</sql>
+
+	<sql id="selectUserVo">
+		select u.user_id,u.user_name,u.nick_name,u.phone_number,u.state,u.create_time,u.email,
+			   d.dept_name,u.user_type,u.sex,u.avatar
+		from sys_user u
+				 left join sys_dept d on u.dept_id = d.dept_id
+	</sql>
+
+	<sql id="selectUser">
+		select user_id, dept_id, user_name, nick_name, user_type, email, phone_number, sex, avatar, state, del_flag, login_ip, login_date, open_id, union_id, create_by, create_time, update_by, update_time, remark
+		from sys_user
+	</sql>
+
+	<select id="selectByUserName" parameterType="String" resultMap="UserResult">
+		<include refid="selectUserDetail"/>
+		where u.user_name = #{userName} limit 0,1
+	</select>
+
+    <select id="selectList" resultType="cn.fateverse.admin.vo.UserVo">
+		<include refid="selectUserVo"/>
+		<where>
+			u.del_flag = '0'
+			<if test="userName != null and userName != ''"> and u.user_name like concat('%', #{userName}, '%')</if>
+            <if test="phoneNumber != null and phoneNumber != ''"> and u.phone_number like concat('%',#{phoneNumber},'%')</if>
+            <if test="state != null and state != ''"> and u.state = #{state}</if>
+			<if test="startTime != null and endTime != null">
+				and u.create_time between #{startTime} and #{endTime}
+			</if>
+			<if test="deptId != null">
+				and (u.dept_id = #{deptId} or u.dept_id in ( select t.dept_id from sys_dept t where find_in_set(#{deptId}, ancestors) ))
+			</if>
+		</where>
+	</select>
+
+	<select id="selectUserByUserId" resultMap="UserResult">
+		<include refid="selectUserDetail"/>
+		where u.user_id = #{userId}
+	</select>
+
+	<select id="selectUserListByExcludeRoleId" resultType="cn.fateverse.admin.vo.UserVo">
+		<include refid="selectUserVo"/>
+		<where>
+			and u.user_id not in (select user_id from sys_user_role where role_id = #{roleId})
+			<if test="userName != null and userName != ''"> and u.user_name like concat('%', #{userName}, '%')</if>
+			<if test="phoneNumber != null and phoneNumber != ''"> and u.phone_number like concat('%',#{phoneNumber},'%')</if>
+		</where>
+	</select>
+
+	<select id="selectUserListByExcludePostId" resultType="cn.fateverse.admin.vo.UserVo">
+		<include refid="selectUserVo"/>
+		<where>
+			and u.user_id not in (select user_id from sys_user_post where post_id = #{postId})
+			<if test="userName != null and userName != ''"> and u.user_name like concat('%', #{userName}, '%')</if>
+			<if test="phoneNumber != null and phoneNumber != ''"> and u.phone_number like concat('%',#{phoneNumber},'%')</if>
+		</where>
+	</select>
+
+	<select id="selectUserListByRoleId" resultType="cn.fateverse.admin.vo.UserVo">
+		<include refid="selectUserVo"/>
+        left join sys_user_role ur on ur.user_id = u.user_id
+		<where>
+			and ur.role_id = #{roleId}
+			<if test="userName != null and userName != ''"> and u.user_name like concat('%', #{userName}, '%')</if>
+			<if test="phoneNumber != null and phoneNumber != ''"> and u.phone_number like concat('%',#{phoneNumber},'%')</if>
+		</where>
+	</select>
+
+	<select id="selectUserListByRoleIds" resultType="cn.fateverse.admin.vo.UserVo">
+		select distinct u.user_id,u.user_name,u.nick_name,u.phone_number,u.state,u.create_time,u.email,
+		d.dept_name,u.user_type,u.sex,u.avatar,ur.role_id
+		from sys_user u
+		left join sys_dept d on u.dept_id = d.dept_id
+		left join sys_user_role ur on ur.user_id = u.user_id
+		where ur.role_id in
+		<foreach collection="list" item="roleId" index="index" open="(" separator="," close=")">
+			#{roleId}
+		</foreach>
+	</select>
+
+
+	<select id="selectUserListByPostId" resultType="cn.fateverse.admin.vo.UserVo">
+		<include refid="selectUserVo"/>
+		left join sys_user_post up on up.user_id = u.user_id
+		<where>
+			<if test="postId != null">and up.post_id = #{postId}</if>
+			<if test="userName != null and userName != ''"> and u.user_name like concat('%', #{userName}, '%')</if>
+			<if test="phoneNumber != null and phoneNumber != ''"> and u.phone_number like concat('%',#{phoneNumber},'%')</if>
+		</where>
+	</select>
+
+	<select id="selectUserInfoByUserName" resultType="cn.fateverse.admin.entity.User">
+		<include refid="selectUser"/>
+		where user_name = #{userName}
+	</select>
+
+	<select id="selectByPhoneNum" resultType="cn.fateverse.admin.entity.User">
+		<include refid="selectUser"/>
+		where phone_number = #{phoneNumber}
+	</select>
+
+	<select id="selectByEmail" resultType="cn.fateverse.admin.entity.User">
+		<include refid="selectUser"/>
+		where email = #{email} limit 0,1
+	</select>
+    <select id="selectUserByUserIds" resultType="cn.fateverse.admin.vo.UserVo">
+		select distinct u.user_id,u.user_name,u.nick_name,u.phone_number,u.state,u.create_time,u.email,
+		d.dept_name,u.user_type,u.sex,u.avatar
+		from sys_user u
+		left join sys_dept d on u.dept_id = d.dept_id
+		where u.user_id in
+		<foreach collection="list" item="userId" index="index" open="(" separator="," close=")">
+			#{userId}
+		</foreach>
+	</select>
+
+	<select id="selectUserByDeptIds" resultType="cn.fateverse.admin.vo.UserVo">
+		select distinct u.user_id,u.user_name,u.nick_name,u.phone_number,u.state,u.create_time,
+		d.dept_name,u.user_type,u.sex,u.avatar,d.dept_id as leaderDeptId
+		from sys_user u
+		left join sys_dept d on u.user_id = d.leader_id
+		where d.dept_id in
+		<foreach collection="list" item="deptId" index="index" open="(" separator="," close=")">
+			#{deptId}
+		</foreach>
+	</select>
+
+	<select id="selectAllUserIds" resultType="java.lang.Long">
+		select user_id from sys_user
+	</select>
+
+
+	<insert id="insert" parameterType="cn.fateverse.admin.entity.UserBase" useGeneratedKeys="true" keyProperty="userId" keyColumn="user_id">
+		insert into sys_user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="deptId != null" > dept_id ,</if>
+			<if test="userName != null and userName != ''" > user_name, </if>
+			<if test="nickName != null and nickName != ''" > nick_name, </if>
+			<if test="email != null and email != ''" > email, </if>
+			<if test="phoneNumber != null and phoneNumber != ''" > phone_number, </if>
+			<if test="sex != null and sex != ''" > sex, </if>
+			<if test="avatar != null and avatar != ''" > avatar, </if>
+			<if test="password != null and password != ''" > `password`, </if>
+			<if test="state != null and state != ''" > state, </if>
+			<if test="unionId != null and unionId != ''" > union_id, </if>
+			<if test="openId != null and openId != ''" > open_id, </if>
+			<if test="createBy != null and createBy != ''">create_by,</if>
+			<if test="createTime != null">create_time,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="deptId != null"> #{deptId}, </if>
+		    <if test="userName != null and userName != ''"> #{userName}, </if>
+		    <if test="nickName != null and nickName != ''"> #{nickName}, </if>
+		    <if test="email != null and email != ''"> #{email}, </if>
+		    <if test="phoneNumber != null and phoneNumber != ''"> #{phoneNumber}, </if>
+		    <if test="sex != null and sex != ''"> #{sex}, </if>
+		    <if test="avatar != null and avatar != ''"> #{avatar}, </if>
+		    <if test="password != null and password != ''"> #{password}, </if>
+		    <if test="state != null and state != ''"> #{state}, </if>
+		    <if test="unionId != null and unionId != ''"> #{unionId}, </if>
+		    <if test="openId != null and openId != ''"> #{openId}, </if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="createTime != null">#{createTime},</if>
+		</trim>
+	</insert>
+
+	<update id="update">
+		update sys_user
+		<set>
+			<if test="deptId != null"> dept_id = #{deptId}, </if>
+			<if test="userName != null and userName != ''"> user_name = #{userName}, </if>
+			<if test="nickName != null and nickName != ''"> nick_name = #{nickName}, </if>
+			<if test="email != null and email != ''"> email = #{email}, </if>
+			<if test="phoneNumber != null and phoneNumber != ''"> phone_number = #{phoneNumber}, </if>
+			<if test="sex != null and sex != ''"> sex = #{sex}, </if>
+			<if test="avatar != null and avatar != ''"> avatar = #{avatar}, </if>
+			<if test="password != null and password != ''"> `password` = #{password}, </if>
+			<if test="state != null and state != ''"> state = #{state}, </if>
+			<if test="unionId != null and unionId != ''"> union_id = #{unionId}, </if>
+			<if test="openId != null and openId != ''"> open_id = #{openId}, </if>
+			<if test="city != null and city != ''"> city = #{city}, </if>
+			<if test="loginIp != null and loginIp != ''"> login_ip = #{loginIp}, </if>
+			<if test="loginDate != null"> login_date = #{loginDate}, </if>
+			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+			<if test="updateTime != null">update_time = #{updateTime},</if>
+		</set>
+		where user_id = #{userId}
+	</update>
+
+<!--	delete from sys_user where user_id = #{userId}-->
+	<update id="deleteByUserId">
+		update sys_user set state = '2', del_flag = '1' where user_id = #{userId}
+	</update>
+</mapper>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.fateverse.admin.mapper.ConfigMapper">
+
+    <resultMap id="ConfigResult" type="cn.fateverse.admin.entity.Config">
+        <id column="config_id" property="configId"/>
+        <result column="config_name" property="configName"/>
+        <result column="config_key" property="configKey"/>
+        <result column="config_value" property="configValue"/>
+        <result column="config_type" property="configType"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+
+    <sql id="selectConfigVo">
+        select config_id, config_name, config_key, config_value, config_type, create_by, create_time, update_by, update_time, remark        from sys_config
+    </sql>
+
+
+
+    <select id="selectList" resultMap="ConfigResult">
+        <include refid="selectConfigVo"/>
+        <where>
+            <if test="configName != null  and configName != ''"> and config_name like concat('%', #{configName}, '%')</if>
+            <if test="configKey != null  and configKey != ''"> and config_key like concat('%', #{configKey}, '%')</if>
+            <if test="configType != null "> and config_type = #{configType}</if>
+        </where>
+    </select>
+
+
+    <select id="selectListPage" resultType="cn.fateverse.admin.entity.Config">
+        <include refid="selectConfigVo"/>
+        <where>
+            config_id >= (select config_id from sys_config
+            <where>
+                <if test="query.configName != null  and query.configName != ''"> and config_name like concat('%', #{query.configName}, '%')</if>
+                <if test="query.configKey != null  and query.configKey != ''"> and config_key like concat('%', #{query.configKey}, '%')</if>
+                <if test="query.configType != null "> and config_type = #{query.configType}</if>
+            </where> limit #{start},1)
+            <if test="query.configName != null  and query.configName != ''"> and config_name like concat('%', #{query.configName}, '%')</if>
+            <if test="query.configKey != null  and query.configKey != ''"> and config_key like concat('%', #{query.configKey}, '%')</if>
+            <if test="query.configType != null "> and config_type = #{query.configType}</if>
+             limit #{size}
+        </where>
+    </select>
+
+
+    <select id="selectById" resultMap="ConfigResult">
+        <include refid="selectConfigVo"/>
+        where config_id = #{configId}
+    </select>
+    <select id="selectCount" resultType="java.lang.Long">
+        select count(*) from sys_config
+        <where>
+            <if test="query.configName != null  and query.configName != ''"> and config_name like concat('%', #{query.configName}, '%')</if>
+            <if test="query.configKey != null  and query.configKey != ''"> and config_key like concat('%', #{query.configKey}, '%')</if>
+            <if test="query.configType != null "> and config_type = #{query.configType}</if>
+        </where>
+    </select>
+
+    <insert id="insert" >
+        insert into sys_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="configName != null">config_name,</if>
+            <if test="configKey != null">config_key,</if>
+            <if test="configValue != null">config_value,</if>
+            <if test="configType != null">config_type,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="configName != null">#{configName},</if>
+            <if test="configKey != null">#{configKey},</if>
+            <if test="configValue != null">#{configValue},</if>
+            <if test="configType != null">#{configType},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+        </trim>
+    </insert>
+    
+    <update id="update">
+        update sys_config
+        <set>
+            <if test="configName != null">config_name = #{configName},</if>
+            <if test="configKey != null">config_key = #{configKey},</if>
+            <if test="configValue != null">config_value = #{configValue},</if>
+            <if test="configType != null">config_type = #{configType},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </set>
+        where config_id = #{configId}
+    </update>
+
+    <delete id="deleteById">
+        delete from sys_config
+        where config_id = #{configId}
+    </delete>
+
+    <delete id="deleteBatchByIdList" parameterType="Integer">
+        delete from sys_config
+        where config_id in
+        <foreach collection="list" open="(" close=")" separator="," item="configId">
+            #{configId}
+        </foreach>
+    </delete>
+
+</mapper>

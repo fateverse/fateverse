@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.fateverse.admin.mapper.DeptMapper">
+
+    <sql id="selectSql">
+        select dept_id,
+               parent_id,
+               ancestors,
+               dept_name,
+               order_num,
+               leader,
+               leader_id,
+               phone,
+               email,
+               state,
+               del_flag,
+               create_by,
+               create_time,
+               update_by,
+               update_time
+        from sys_dept
+    </sql>
+
+    <select id="selectList" resultType="cn.fateverse.admin.entity.Dept">
+        <include refid="selectSql"/>
+        <where>
+            <if test="deptName != null and deptName != ''"> and dept_name like concat('%',#{deptName},'%')</if>
+            <if test="state != null"> and `state` = #{state}</if>
+        </where>
+        order by parent_id, order_num
+    </select>
+
+    <select id="selectById" resultType="cn.fateverse.admin.entity.Dept">
+        select d.dept_id,
+               d.parent_id,
+               d.ancestors,
+               d.dept_name,
+               d.order_num,
+               d.leader,
+               d.leader_id,
+               d.phone,
+               d.email,
+               d.state,
+               d.del_flag,
+               d.create_by,
+               d.create_time,
+               d.update_by,
+               d.update_time
+        from sys_dept d
+                 left join sys_dept p on p.dept_id = d.parent_id
+        where d.dept_id = #{deptId}
+    </select>
+
+    <select id="selectExclude" resultType="cn.fateverse.admin.entity.Dept">
+        <include refid="selectSql"/>
+        where dept_id != #{deptId} and parent_id != #{deptId}
+    </select>
+
+    <select id="selectChildrenById" parameterType="Long" resultType="cn.fateverse.admin.entity.Dept">
+        <include refid="selectSql"/>
+        where find_in_set(#{deptId}, ancestors)
+    </select>
+
+    <select id="selectByDeptNameAndParentId" resultType="cn.fateverse.admin.entity.Dept">
+        <include refid="selectSql"/>
+        where dept_name = #{deptName} and parent_id = #{parentId} limit 1
+    </select>
+
+    <select id="selectListByDeptParentId" resultType="cn.fateverse.admin.entity.Dept">
+        <include refid="selectSql"/>
+        where parent_id = #{parentId}
+    </select>
+
+    <select id="selectChildCountByDeptId" resultType="java.lang.Integer">
+        select count(1)
+        from sys_dept
+        where parent_id = #{deptId}
+          and del_flag = '0'
+        limit 1
+    </select>
+
+    <select id="selectExistUserCount" resultType="java.lang.Integer">
+        select count(1)
+        from sys_user
+        where dept_id = #{deptId}
+          and del_flag = '0'
+        limit 1
+    </select>
+
+    <select id="selectDeptNameListByParentId" resultType="java.lang.String">
+        select dept_name from sys_dept where parent_id = #{parentId}
+    </select>
+
+    <select id="selectByIds" resultType="cn.fateverse.admin.entity.Dept">
+        <include refid="selectSql"/>
+        where dept_id in
+        <foreach collection="list" item="deptId" open="(" separator="," close=")">
+            #{deptId}
+        </foreach>
+    </select>
+
+    <insert id="insert">
+        insert into sys_dept
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deptId != null and deptId != 0">dept_id,</if>
+            <if test="parentId != null and parentId != 0">parent_id,</if>
+            <if test="deptName != null and deptName != ''">dept_name,</if>
+            <if test="ancestors != null and ancestors != ''">ancestors,</if>
+            <if test="orderNum != null and orderNum != ''">order_num,</if>
+            <if test="leader != null and leader != ''">leader,</if>
+            <if test="leaderId != null ">leader_id,</if>
+            <if test="phone != null and phone != ''">phone,</if>
+            <if test="email != null and email != ''">email,</if>
+            <if test="state != null">state,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deptId != null and deptId != 0">#{deptId},</if>
+            <if test="parentId != null and parentId != 0">#{parentId},</if>
+            <if test="deptName != null and deptName != ''">#{deptName},</if>
+            <if test="ancestors != null and ancestors != ''">#{ancestors},</if>
+            <if test="orderNum != null and orderNum != ''">#{orderNum},</if>
+            <if test="leader != null and leader != ''">#{leader},</if>
+            <if test="leaderId != null ">#{leaderId},</if>
+            <if test="phone != null and phone != ''">#{phone},</if>
+            <if test="email != null and email != ''">#{email},</if>
+            <if test="state != null">#{state},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="update">
+        update sys_dept
+        <set>
+            <if test="parentId != null and parentId != 0">parent_id = #{parentId},</if>
+            <if test="deptName != null and deptName != ''">dept_name = #{deptName},</if>
+            <if test="ancestors != null">ancestors = #{ancestors},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="leader != null">leader = #{leader},</if>
+            <if test="leaderId != null">leader_id = #{leaderId},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="state != null">state = #{state},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </set>
+        where dept_id = #{deptId}
+    </update>
+
+    <update id="updateChildren" parameterType="java.util.List">
+        update sys_dept set ancestors =
+        <foreach collection="depts" item="item" index="index"
+                 separator=" " open="case dept_id" close="end">
+            when #{item.deptId} then #{item.ancestors}
+        </foreach>
+        where dept_id in
+        <foreach collection="depts" item="item" index="index"
+                 separator="," open="(" close=")">
+            #{item.deptId}
+        </foreach>
+    </update>
+
+    <update id="updateState">
+        update sys_dept
+        <set>
+            <if test="state != null and state != ''">state = #{state},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </set>
+        where dept_id in (${ancestors})
+    </update>
+
+    <delete id="delete">
+        delete
+        from sys_dept
+        where dept_id = #{deptId}
+    </delete>
+
+</mapper>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.fateverse.notice.mapper.UserNoticeMapper">
+
+    <insert id="insert">
+        insert into sys_user_notice
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="noticeId != null">notice_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="state != null">state,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="noticeId != null">#{noticeId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="state != null">#{state},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <insert id="batchInsert">
+        insert into sys_user_notice (notice_id,
+        user_id,
+        state,
+        create_time)
+        values
+        <foreach collection="list" index="index" separator="," item="notice">
+            (#{notice.noticeId},#{notice.userId},#{notice.state},#{notice.createTime})
+        </foreach>
+    </insert>
+
+    <update id="batchRead">
+        update sys_user_notice
+        set state = '1'
+        where user_id = #{userId}
+    </update>
+
+    <update id="read">
+        update sys_user_notice
+        set state = '1'
+        where user_id = #{userId}
+          and notice_id = #{noticeId}
+    </update>
+
+    <delete id="delete">
+        delete
+        from sys_user_notice
+        where user_id = #{userId}
+          and notice_id = #{noticeId}
+    </delete>
+
+    <delete id="batchDelete">
+        delete from sys_user_notice where user_id = #{userId} and notice_id in
+        <foreach collection="noticeIdList" open="(" separator="," close=")" item="noticeId">
+            #{noticeId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByNoticeId">
+        delete
+        from sys_user_notice
+        where notice_id = #{noticeId}
+    </delete>
+
+    <delete id="deleteAll">
+        delete
+        from sys_user_notice
+        where user_id = #{userId}
+    </delete>
+
+</mapper>

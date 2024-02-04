@@ -1,0 +1,54 @@
+import request from "../../utils/http";
+
+// 请求${functionName}list
+export const get${ClassName}List = (params:object|undefined) => {
+    return request({
+        url: '/${serviceName}/${moduleName}/${businessName}',
+        method: 'get',
+        params
+    })
+}
+//获取到option列表
+#if($table.hasOptionApi())
+export const get${ClassName}Opt = () => {
+    return request({
+        url: '/${serviceName}/${moduleName}/${businessName}/option',
+        method: 'get',
+    })
+}
+#end
+
+// 获取${functionName}详情
+export const get${ClassName}Details = (${className}Id: number) => {
+    return request({
+        url: '/${serviceName}/${moduleName}/${businessName}/' + ${className}Id,
+        method: 'get'
+    })
+}
+
+// 新增${functionName}
+export const add${ClassName} = (data:object) => {
+    return request({
+        url: '/${serviceName}/${moduleName}/${businessName}',
+        method: 'post',
+        data
+    })
+}
+
+// 修改${functionName}
+export const edit${ClassName} = (data: object) => {
+    return request({
+        url: '/${serviceName}/${moduleName}/${businessName}',
+        method: 'put',
+        data
+    })
+}
+
+// 删除${functionName}
+export const del${ClassName} =(${className}Id: number) => {
+    return request({
+        url: '/${serviceName}/${moduleName}/${businessName}/' + ${className}Id,
+        method: 'delete'
+    })
+}
+

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>fateverse</artifactId>
+        <groupId>cn.fateverse</groupId>
+        <version>1.0.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <artifactId>common</artifactId>
+    <description>common通用模块</description>
+    <packaging>pom</packaging>
+
+
+    <modules>
+        <module>common-code</module>
+        <module>common-security</module>
+        <module>common-core</module>
+        <module>common-redis</module>
+        <module>common-mybatis</module>
+        <module>common-swagger</module>
+        <module>common-log</module>
+        <module>common-file</module>
+        <module>common-dubbo</module>
+        <module>common-email</module>
+        <module>common-websocket</module>
+        <module>common-mybatis-puls</module>
+        <module>common-decrypt</module>
+        <module>common-seata</module>
+        <module>common-lock</module>
+        <module>common-excel</module>
+    </modules>
+
+
+    <properties>
+        <mysql.version>8.0.30</mysql.version>
+        <lombok.version>1.18.24</lombok.version>
+        <fastjson.version>2.0.39</fastjson.version>
+        <bitwalker.version>1.19</bitwalker.version>
+        <spring-boot.mybatis>2.2.2</spring-boot.mybatis>
+        <pagehelper.boot.version>1.4.5</pagehelper.boot.version>
+    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <!-- JSON 解析器和生成器 -->
+            <dependency>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+            <!-- 解析客户端操作系统、浏览器等 -->
+            <dependency>
+                <groupId>eu.bitwalker</groupId>
+                <artifactId>UserAgentUtils</artifactId>
+                <version>${bitwalker.version}</version>
+            </dependency>
+            <!-- Mybatis 依赖配置 -->
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${spring-boot.mybatis}</version>
+            </dependency>
+            <!-- pagehelper 分页插件 -->
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${pagehelper.boot.version}</version>
+            </dependency>
+            <!--mysql数据库连接工具-->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.version}</version>
+            </dependency>
+            <!--Lombok-->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+</project>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.fateverse.code.mapper.RegularMapper">
+
+    <resultMap id="RegulaResult" type="cn.fateverse.code.entity.Regular">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="regular" property="regular"/>
+        <result column="validation" property="validation"/>
+        <result column="enable" property="enable"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <sql id="selectRegulaVo">
+        select id, name, regular, validation, enable, create_by, create_time, update_by, update_time        from gen_regular
+    </sql>
+
+    <select id="selectList" resultMap="RegulaResult">
+        <include refid="selectRegulaVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="regular != null  and regular != ''"> and regular like concat('%', #{regular}, '%')</if>
+            <if test="enable != null "> and enable = #{enable}</if>
+        </where>
+    </select>
+
+    <select id="selectById" resultMap="RegulaResult">
+        <include refid="selectRegulaVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insert" >
+        insert into gen_regular
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="regular != null">regular,</if>
+            <if test="validation != null">validation,</if>
+            <if test="enable != null">enable,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="regular != null">#{regular},</if>
+            <if test="validation != null">#{validation},</if>
+            <if test="enable != null">#{enable},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="update">
+        update gen_regular
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="regular != null">regular = #{regular},</if>
+            <if test="validation != null">validation = #{validation},</if>
+            <if test="enable != null">enable = #{enable},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        delete from gen_regular
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteBatchByIdList" parameterType="Long">
+        delete from gen_regular
+        where id in
+        <foreach collection="list" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

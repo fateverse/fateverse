@@ -1,0 +1,37 @@
+package ${packageName}.entity;
+
+import cn.fateverse.common.core.annotaion.EnableAutoField;
+import cn.fateverse.common.core.entity.BaseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+#if($table.hasDateDto())
+
+import java.util.Date;
+#end
+
+/**
+ * ${functionName}对象 ${tableName}
+ *
+ * @author ${author}
+ * @date ${dateTime}
+*/
+@Data
+@Builder
+@EnableAutoField
+@AllArgsConstructor
+@NoArgsConstructor
+public class ${ClassName} extends BaseEntity{
+#foreach ($column in $columns)
+#if(!$column.isSuperColumn($column.javaField))
+
+    /**
+    * $column.columnComment
+    */
+    private $column.javaType $column.javaField;
+#end
+#end
+
+}

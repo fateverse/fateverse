@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.fateverse.notice.mapper.NoticeMapper">
+
+    <sql id="noticeDetails">
+        select notice_id, notice_title, notice_type, send_type, sender_ids, notice_content, content_type, state, cluster, create_by, create_time, update_by, update_time, remark
+        from sys_notice
+    </sql>
+
+    <sql id="noticeVo">
+        select notice_id, notice_title, notice_type, send_type, sender_ids, content_type, state, cluster, create_by, create_time, update_by, update_time, remark
+        from sys_notice
+    </sql>
+
+    <select id="selectById" resultType="cn.fateverse.notice.entity.Notice">
+        <include refid="noticeDetails"/>
+        <where>
+            <if test="publishId != null">and publish_id = #{publishId}</if>
+            <if test="noticeId != null">and notice_id = #{noticeId}</if>
+        </where>
+    </select>
+
+    <select id="selectSimpleById" resultType="cn.fateverse.notice.entity.Notice">
+        <include refid="noticeVo"/>
+        <where>
+            <if test="publishId != null">and publish_id = #{publishId}</if>
+            <if test="noticeId != null">and notice_id = #{noticeId}</if>
+        </where>
+    </select>
+
+    <select id="selectList" resultType="cn.fateverse.notice.entity.Notice">
+        <include refid="noticeVo"/>
+        <where>
+            <if test="noticeTitle != null and noticeTitle != ''">and notice_title like concat('%',#{noticeTitle},'%')</if>
+            <if test="noticeType != null and noticeType != ''">and notice_type like concat('%',#{noticeType},'%')</if>
+            <if test="sendType != null and sendType != ''">and send_type = #{sendType}</if>
+            <if test="contentType != null and contentType != ''">and content_type = #{contentType}</if>
+            <if test="state != null and state != ''">and state = #{state}</if>
+            <if test="cluster != null and cluster != ''">and cluster = #{cluster}</if>
+            <if test="publishId != null">and publish_id = #{publishId}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="noticeId">
+        insert into sys_notice
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="noticeId != null"> notice_id,</if>
+            <if test="noticeTitle != null and noticeTitle != ''"> notice_title,</if>
+            <if test="noticeType != null and noticeType != ''"> notice_type,</if>
+            <if test="sendType != null and sendType != ''"> send_type,</if>
+            <if test="senderIds != null and senderIds != ''"> sender_ids,</if>
+            <if test="publishId != null and publishId != ''"> publish_id,</if>
+            <if test="noticeContent != null and noticeContent != ''"> notice_content,</if>
+            <if test="contentType != null and contentType != ''"> content_type,</if>
+            <if test="state != null">state,</if>
+            <if test="cluster != null">cluster,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="noticeId != null"> #{noticeId},</if>
+            <if test="noticeTitle != null and noticeTitle != ''"> #{noticeTitle},</if>
+            <if test="noticeType != null and noticeType != ''"> #{noticeType},</if>
+            <if test="sendType != null and sendType != ''"> #{sendType},</if>
+            <if test="senderIds != null and senderIds != ''"> #{senderIds},</if>
+            <if test="publishId != null and publishId != ''"> #{publishId},</if>
+            <if test="noticeContent != null and noticeContent != ''"> #{noticeContent},</if>
+            <if test="contentType != null and contentType != ''"> #{contentType},</if>
+            <if test="state != null">#{state},</if>
+            <if test="cluster != null">#{cluster},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="update">
+        update sys_user_notice
+        <set>
+            <if test="state != null">state = #{state},</if>
+        </set>
+        where notice_id = #{noticeId}
+    </update>
+
+    <update id="changeState">
+        update sys_user_notice
+        <set>
+            <if test="state != null">state = #{state},</if>
+        </set>
+        where notice_id = #{noticeId}
+    </update>
+
+    <delete id="deleteById">
+        delete from sys_notice where notice_id = #{noticeId}
+    </delete>
+
+    <delete id="batchDeleteByIdList">
+        delete from sys_notice where notice_id in
+        <foreach collection="list" open="(" separator="," close=")" item="noticeId">
+            #{noticeId}
+        </foreach>
+    </delete>
+
+
+</mapper>

@@ -1,0 +1,42 @@
+# Tomcat
+server:
+  port: 10005
+
+# Spring
+spring:
+  application:
+    # 应用名称
+    name: log
+  profiles:
+    # 环境配置
+    active: dev
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    nacos:
+      discovery:
+        # 服务注册地址
+        server-addr: localhost:8848
+        username: nacos
+        password: nacos
+        namespace: ${spring.profiles.active}
+      config:
+        # 配置中心地址
+        server-addr: ${spring.cloud.nacos.discovery.server-addr}
+        file-extension: yaml
+        namespace: ${spring.profiles.active}
+        shared-configs:
+          - data-id: application-${spring.profiles.active}.yaml
+            refresh: true
+dubbo:
+  application:
+    name: dubbo-${spring.application.name}
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: nacos://${spring.cloud.nacos.discovery.server-addr}
+    username: ${spring.cloud.nacos.discovery.username}
+    password: ${spring.cloud.nacos.discovery.password}
+    parameters:
+      namespace: dubbo-${spring.profiles.active}

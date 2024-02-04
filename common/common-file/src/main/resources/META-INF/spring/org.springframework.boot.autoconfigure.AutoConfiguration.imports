@@ -1,0 +1,5 @@
+cn.fateverse.common.file.config.AliyunAutoConfiguration
+cn.fateverse.common.file.config.MinioAutoConfiguration
+cn.fateverse.common.file.config.FTPAutoConfiguration
+cn.fateverse.common.file.config.FastDFSAutoConfiguration
+cn.fateverse.common.file.service.FileStoreCombinationService

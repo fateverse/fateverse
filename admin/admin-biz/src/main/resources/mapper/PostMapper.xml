@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.fateverse.admin.mapper.PostMapper">
+
+    <sql id="PostList">
+        select post_id,
+               post_code,
+               post_name,
+               post_sort,
+               state,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from sys_post
+    </sql>
+
+    <select id="selectList" resultType="cn.fateverse.admin.entity.Post">
+        <include refid="PostList"/>
+        <where>
+            <if test="postCode != null and postCode != ''">and post_code like concat('%',#{postCode},'%')</if>
+            <if test="postName != null and postName != ''">and post_name like concat('%',#{postName},'%')</if>
+            <if test="state != null and state != ''">and state = #{state}</if>
+        </where>
+        order by post_sort
+    </select>
+
+    <select id="selectById" resultType="cn.fateverse.admin.entity.Post">
+        <include refid="PostList"/>
+        where post_id = #{id}
+    </select>
+
+    <select id="selectByPostCode" resultType="cn.fateverse.admin.entity.Post">
+        <include refid="PostList"/>
+        where post_code = #{postCode} limit 1
+    </select>
+
+    <select id="selectByPostName" resultType="cn.fateverse.admin.entity.Post">
+        <include refid="PostList"/>
+        where post_name = #{postName} limit 1
+    </select>
+    <select id="hasUserByPostId" resultType="java.lang.Integer">
+        select count(*) from sys_user_post where post_id = #{postId}
+    </select>
+
+    <insert id="insert">
+        insert into sys_post
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="postCode != null and postCode != ''">post_code,</if>
+            <if test="postName != null and postName != ''">post_name,</if>
+            <if test="postSort != null and postSort != ''">post_sort,</if>
+            <if test="state != null and state != ''">state,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="postCode != null and postCode != ''">#{postCode},</if>
+            <if test="postName != null and postName != ''">#{postName},</if>
+            <if test="postSort != null and postSort != ''">#{postSort},</if>
+            <if test="state != null and state != ''">#{state},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="update">
+        update sys_post
+        <set>
+            <if test="postCode != null and postCode != ''">post_code = #{postCode},</if>
+            <if test="postName != null and postName != ''">post_name = #{postName},</if>
+            <if test="postSort != null and postSort != ''">post_sort = #{postSort},</if>
+            <if test="state != null and state != ''">state = #{state},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </set>
+        where post_id = #{postId}
+    </update>
+
+    <delete id="deleteById">
+        delete from sys_post where post_id = #{postId}
+    </delete>
+
+</mapper>

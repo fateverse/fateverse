@@ -1,0 +1,10 @@
+import { IBaseDataType } from "..";
+
+// 表格${functionName}数据类型规范
+export interface ${ClassName}Type extends IBaseDataType {
+#foreach ($column in $columns)
+#if(!$column.isSuperColumn($column.javaField))
+    ${column.javaField}:#if("String" == $column.javaType) string#else number#end,
+#end
+#end
+}

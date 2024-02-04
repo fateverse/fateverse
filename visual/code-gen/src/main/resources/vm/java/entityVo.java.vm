@@ -1,0 +1,56 @@
+package ${packageName}.entity.vo;
+
+import ${packageName}.entity.${ClassName};
+import cn.fateverse.common.core.annotaion.Excel;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+#if($table.hasDateDto())
+#end
+
+
+/**
+ * ${functionName}对象 ${tableName}
+ *
+ * @author ${author}
+ * @date ${dateTime}
+ */
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@ApiModel("${functionName}Vo")
+public class ${ClassName}Vo {
+
+    /**
+     * ${pkColumn.columnComment}
+     */
+    @ApiModelProperty("${pkColumn.columnComment}")
+    private $pkColumn.javaType $pkColumn.javaField;
+#foreach ($column in $columns)
+#if($column.list())
+
+    /**
+     * $column.columnComment
+     */
+    @ApiModelProperty("${column.columnComment}")
+    @Excel("${column.columnComment}")
+    private $column.javaType $column.javaField;
+#end
+#end
+
+    public static ${ClassName}Vo to${ClassName}Vo(${ClassName} ${className}) {
+        return ${ClassName}Vo.builder()
+                .${pkColumn.javaField}(${className}.get${table.capitalize(${pkColumn.javaField})}())
+#foreach ($column in $columns)
+#if($column.list())
+                .${column.javaField}(${className}.get${table.capitalize(${column.javaField})}())
+#end
+#end
+                .build();
+    }
+}

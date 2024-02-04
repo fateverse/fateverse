@@ -1,0 +1,323 @@
+import { Button, Col, Form, Input, message, Modal, Radio, Row, Space } from "antd";
+import { PlusCircleTwoTone, EditTwoTone, DeleteTwoTone, ExclamationCircleOutlined } from '@ant-design/icons'
+import Table, { ColumnsType } from "antd/lib/table";
+import { TableRowSelection } from "antd/lib/table/interface";
+import React, { Fragment, useEffect, useReducer, useState } from "react";
+import { get${ClassName}List, get${ClassName}Details, add${ClassName}, edit${ClassName}, del${ClassName} } from "../../api/${businessName}";
+#if($table.hasDictSelect())
+import { DTag } from "../../components/DTag";
+import { getCacheType } from "../../utils/cache";
+#end
+import SearchForm from "../../components/SearchForm";
+import { IModalConfig, IResponse } from "../../type";
+import { DataType } from "../../type/${businessName}";
+import confirm from "antd/lib/modal/confirm";
+import { parseDateTime, queryReducer, reducerPagination } from "../../utils/tool";
+
+
+// 初始化搜索条件
+const initQueryParams = {
+#foreach ($column in $columns)
+#if("1" == $column.isQuery)
+    $column.javaField:#if("String" == $column.javaType) ''#else undefined#end,
+#end
+#end
+    pageSize: 10,
+    pageNum: 1
+}
+
+const reducerSearch = (state: any, newState: any) =>{
+    return {
+#foreach ($column in $columns)
+#if("1" == $column.isQuery)
+        $column.javaField: state.$column.javaField = newState.$column.javaField,
+#end
+#end
+        pageSize: state.pageSize = newState.pageSize,
+        pageNum: state.pageNum = newState.pageNum,
+    }
+}
+function ${ClassName}() {
+    //搜索条件
+    const [queryParams, setQueryParams] = useReducer( queryReducer ,initQueryParams)
+#foreach ($column in $columns)
+#if("select" == $column.htmlType && ${table.strNotEmpty($column.dictType)})
+    //todo字典 下拉框options 动态判断
+    const [${column.javaField}OptionList, set${table.capitalize($column.javaField)}OptionList] = useState<any>([])
+    //单选options
+    const [${column.javaField}RadioOption, set${table.capitalize($column.javaField)}RadioOption] = useState<any>()
+#end
+#end
+    //数据总数
+    const [total, setTotal] = useState<number>()
+    //表格list
+    const [list, setList] = useState<Array<DataType>>()
+    //表格数据加载中
+    const [loading, setLoading] = useState<boolean>(false)
+    //表格多选是否勾选
+    const [checkStrictly, setCheckStrictly] = useState(false);
+    //弹窗config
+    const [modalConfig, setModalConfig] = useState<IModalConfig>();
+    //formHooks
+    const [form] = Form.useForm()
+    //所选数据id
+    const [${pkColumn.javaField}, set${table.capitalize($pkColumn.javaField)}] = useState<number>()
+    //所选数据ids
+    const [${pkColumn.javaField}s, set${table.capitalize($pkColumn.javaField)}s] = useState<Array<any>>([])
+    //筛选表单配置
+    const searchConfig = {
+        name: 'searchForm',
+        formItem: [
+#foreach ($column in $columns)
+#if("1" == $column.isQuery)
+            {
+                name: '${column.columnComment}',
+                type: '${column.htmlType}',
+                key: '${column.javaField}',
+#if("select"==$column.htmlType)
+                options: ${column.javaField}OptionList
+#end
+            },
+#end
+#end
+        ]
+    } as object
+    // 表格列数据
+    const colums: ColumnsType<DataType> = [
+#foreach ($column in $columns)
+#if("1" == $column.isList)
+        {
+            title: '${column.columnComment}',
+            key: '${column.javaField}',
+            dataIndex: '${column.javaField}',
+#if("select" == $column.htmlType && ${table.strNotEmpty($column.dictType)})
+            render: ((_, { ${column.javaField} }) => {
+                return (
+                    <DTag options={${column.javaField}OptionList} state={${column.javaField}} />
+                )
+            })
+#end
+        },
+#end
+#end
+        {
+            title: '操作',
+            key: 'action',
+            align: 'center',
+            render: ((_, record) => (
+                <Space size="middle">
+                    <Button type="link" onClick={() => handleEdit(record)}>修改</Button>
+                    <Button type="text" onClick={() => handleDel(record)} danger>删除</Button>
+                </Space>
+            ))
+        }
+    ]
+    //获取${functionName}list
+    const getList = () => {
+        setLoading(true)
+        get${ClassName}List(queryParams).then((res: IResponse) => {
+            setList(res.data.rows)
+            setTotal(res.data.total)
+            setLoading(false)
+        })
+    }
+    // 点击添加
+    const handleAdd = () => {
+#foreach ($column in $columns)
+#if("1" == $column.isInsert && "select" == $column.htmlType && ${table.strNotEmpty($column.dictType)})
+        set${table.capitalize($column.javaField)}RadioOption(${column.javaField}OptionList)
+#end
+#end
+        setModalConfig({ title: '添加', open: true, confirmLoading: false })
+    }
+    // 点击修改
+    const handleEdit = (row:any) => {
+        const ${pkColumn.javaField} = row.${pkColumn.javaField}|| ${pkColumn.javaField}s[0];
+        set${table.capitalize($pkColumn.javaField)}(${pkColumn.javaField});
+#foreach ($column in $columns)
+#if("1" == $column.isInsert && "select" == $column.htmlType && ${table.strNotEmpty($column.dictType)})
+                set${table.capitalize($column.javaField)}RadioOption(${column.javaField}OptionList)
+#end
+#end
+        get${ClassName}Details(${pkColumn.javaField}).then((res: IResponse) => {
+            form.setFieldsValue({...res.data})
+            setModalConfig({ title: '修改', open: true, confirmLoading: false })
+        })
+    }
+    // 点击删除
+    const handleDel = (row:any) => {
+        const ${pkColumn.javaField} = row.${pkColumn.javaField} || ${pkColumn.javaField}s[0];
+        confirm({
+            title: '确定删除这一项吗?',
+            icon: <ExclamationCircleOutlined />,
+            content: `详情主键为: `+ row.${pkColumn.javaField},
+            onOk() {
+                del${ClassName}(${pkColumn.javaField}).then((res: IResponse) => {
+                    if (res.code === 1000) {
+                        message.success(res.msg)
+                        getList()
+                    } else {
+                        message.error(res.msg)
+                    }
+                })
+            },
+            onCancel() {
+            },
+        });
+    }
+    // 点击提交
+    const handleSubmit = () => {
+        const obj = form.getFieldsValue();
+        if(modalConfig?.title === '添加') {
+            add${ClassName}(obj).then((res: IResponse) => {
+                setModalConfig({ title: '添加', open: true, confirmLoading: true })
+                if(res.code === 1000) {
+                    message.success('添加成功');
+                    setModalConfig({ title: '添加', open: true, confirmLoading: false })
+                    handleCancel()
+                    getList()
+                }else {
+                    message.error(res.msg);
+                    setModalConfig({ title: '添加', open: true, confirmLoading: false })
+                }
+            })
+        }else {
+            const objE = {${pkColumn.javaField}, ...obj}
+            edit${ClassName}(objE).then((res: IResponse) => {
+                setModalConfig({ title: '修改', open: true, confirmLoading: true })
+                if (res.code === 1000) {
+                    message.success('修改成功')
+                    setModalConfig({ title: '修改', open: true, confirmLoading: false })
+                    handleCancel()
+                    getList()
+                } else {
+                    message.error(res.msg)
+                    setModalConfig({ title: '修改', open: true, confirmLoading: false })
+                }
+            })
+        }
+    }
+    // 点击取消
+    const handleCancel = () => {
+        form.resetFields();
+        setModalConfig({ title: '', open: false, confirmLoading: false })
+    }
+    // 分页
+    const pagination = (pageNum: any,pageSize: any) => {
+        new Promise((resolve,reject) => {
+            setQueryParams({type: 'pagination', data: {pageNum,pageSize }})
+            resolve(true)
+        }).then((res: any) => {
+            getList()
+        })
+    }
+    // 行数据选择
+    const rowSelection: TableRowSelection<DataType> = {
+        onChange: (selectedRowKeys, selectedRows) => {
+            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+            set${table.capitalize($pkColumn.javaField)}s(Array.from(selectedRowKeys))
+        },
+        onSelect: (record, selected, selectedRows) => {
+            console.log(record, selected, selectedRows);
+        },
+        onSelectAll: (selected, selectedRows, changeRows) => {
+            console.log(selected, selectedRows, changeRows);
+        },
+    };
+
+    // 筛选表单提交事件
+    const submit = (v: any) => {
+        const {#foreach ($column in $columns)#if("1" == $column.isQuery)${column.javaField}, #end#end} = v
+        const query = {
+#foreach ($column in $columns)
+#if("1" == $column.isQuery)
+            ${column.javaField},
+#end
+#end
+            pageSize: 10,
+            pageNum: 1
+        }
+        new Promise( (resolve, reject) => {
+            setQueryParams({ type: 'search', data: query, void: reducerSearch})
+            resolve(true)
+        }).then((res)=>{
+            getList()
+        })
+    }
+
+#if($table.hasDictSelect())
+    //获取筛选表单下拉框缓存数据
+    const getSelectOptions = async () => {
+#foreach ($column in $columns)
+#if("1" == $column.isInsert && "select" == $column.htmlType && ${table.strNotEmpty($column.dictType)})
+        const ${column.javaField}Options = await getCacheType('${column.dictType}').then((options: any) => {
+            return options
+        })
+        set${table.capitalize($column.javaField)}OptionList(${column.javaField}Options)
+#end
+#end
+    }
+#end
+    useEffect(() => {
+        getSelectOptions();
+        getList()
+    }, [])
+    return (
+        <Fragment>
+            <SearchForm config={searchConfig} submit={submit}/>
+            <div className="table-headbtn-box">
+                <Button icon={<PlusCircleTwoTone />} type="primary" size="middle" className="table-headbtn" onClick={handleAdd}>添加</Button>
+                <Button icon={<EditTwoTone />} type="primary" ghost className="table-headbtn" onClick={handleEdit} disabled={${pkColumn.javaField}s.length != 1} >修改</Button>
+                <Button icon={<DeleteTwoTone />} type="primary" danger className="table-headbtn" disabled={${pkColumn.javaField}s.length != 1} >删除</Button>
+            </div>
+            <Table
+                columns={colums}
+                dataSource={list}
+                loading={loading}
+                rowSelection={{ ...rowSelection, checkStrictly }}
+                pagination={{ total, onChange: pagination }}
+                rowKey='${pkColumn.javaField}'
+            />
+            <Modal
+                open={modalConfig?.open}
+                title={modalConfig?.title}
+                onOk={handleSubmit}
+                onCancel={handleCancel}
+                confirmLoading={modalConfig?.confirmLoading}
+                width={700}
+            >
+                <Form
+                    name="form"
+                    form={form}
+                    labelAlign='right'
+                    labelCol={{
+                        span: 6,
+                        offset: 0
+                    }}
+                >
+                    <Row>
+#foreach ($column in $columns)
+#if("1" == $column.isInsert || "1" == $column.isEdit)
+                        <Col span={12}>
+                            <Form.Item
+                                label="${column.columnComment}"
+                                name="${column.javaField}"
+                                required
+                            >
+#if("select" == $column.htmlType && ${table.strNotEmpty($column.dictType)})
+                                <Radio.Group options={${column.javaField}RadioOption} />
+#else
+                                <Input placeholder="请输入${column.columnComment}" />
+#end
+                            </Form.Item>
+                        </Col>
+#end
+#end
+                    </Row>
+                </Form>
+            </Modal>
+        </Fragment>
+    )
+}
+
+export default ${ClassName};

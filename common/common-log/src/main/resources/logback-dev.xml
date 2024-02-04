@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="false">
+    <property name="LOG_HOME" value="/home/clay/logs"/><!-- 上线阶段修改 -->
+    <!-- 日志输出到控制台 -->
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%green(%d{yyyy-MM-dd HH:mm:ss.SSS}) %highlight(%-5level) %cyan([%thread] %60.60logger) -
+                %highlight(%msg%n)
+            </pattern>
+        </layout>
+    </appender>
+
+    <!-- 日志输出到文件 -->
+    <appender name="alllog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/spring.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/backup/%d{yyyy-MM-dd}/Loyalty.%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 根Logger -->
+    <root level="debug">
+        <appender-ref ref="stdout"/>
+        <appender-ref ref="alllog"/>
+    </root>
+
+
+</configuration>
+

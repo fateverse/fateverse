@@ -1,0 +1,46 @@
+{
+  "groups": [
+    {
+      "name": "email",
+      "type": "cn.fateverse.email.config.EMailProperties",
+      "sourceType": "cn.fateverse.email.config.EMailProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "email.sender",
+      "type": "java.lang.String",
+      "sourceType": "cn.fateverse.email.config.EMailProperties"
+    },
+    {
+      "name": "email.personal",
+      "type": "java.lang.String",
+      "sourceType": "cn.fateverse.email.config.EMailProperties"
+    },
+    {
+      "name": "email.emailSmtpHost",
+      "type": "java.lang.String",
+      "sourceType": "cn.fateverse.email.config.EMailProperties"
+    },
+    {
+      "name": "email.emailSmtpPort",
+      "type": "java.lang.String",
+      "sourceType": "cn.fateverse.email.config.EMailProperties"
+    },
+    {
+      "name": "email.username",
+      "type": "java.lang.String",
+      "sourceType": "cn.fateverse.email.config.EMailProperties"
+    },
+    {
+      "name": "email.password",
+      "type": "java.lang.String",
+      "sourceType": "cn.fateverse.email.config.EMailProperties"
+    },
+    {
+      "name": "email.encryption",
+      "type": "java.lang.String",
+      "sourceType": "cn.fateverse.email.config.EMailProperties"
+    }
+  ]
+}

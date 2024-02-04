@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.fateverse.admin.mapper.DictDataMapper">
+
+    <resultMap id="DictDataResult" type="cn.fateverse.admin.entity.DictData">
+        <id column="dict_code" property="dictCode"/>
+        <result column="dict_sort" property="dictSort"/>
+        <result column="dict_label" property="dictLabel"/>
+        <result column="dict_value" property="dictValue"/>
+        <result column="dict_type" property="dictType"/>
+        <result column="is_type" property="isType"/>
+        <result column="list_class" property="listClass"/>
+        <result column="theme" property="theme"/>
+        <result column="is_default" property="isDefault"/>
+        <result column="state" property="state"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+
+
+    <sql id="selectDictData">
+        select dict_code, dict_sort, dict_label, dict_value, dict_type, is_type, list_class, theme, is_default, state, create_by, create_time, update_by, update_time, remark
+        from sys_dict_data
+    </sql>
+
+    <select id="selectList" resultMap="DictDataResult">
+        <include refid="selectDictData"/>
+        <where>
+            <if test="dictType != null and dictType != ''">and dict_type = #{dictType} </if>
+            <if test="dictLabel != null and dictLabel != ''">and dict_label like concat('%', #{dictLabel},'%')</if>
+            <if test="state != null and state != ''">and state = #{state}</if>
+        </where>
+        order by dict_sort asc
+    </select>
+
+    <select id="selectByCode" resultMap="DictDataResult">
+        <include refid="selectDictData"/>
+        where dict_code = #{dictCode}
+    </select>
+    <select id="selectCacheList" resultMap="DictDataResult">
+        select dd.dict_code, dd.dict_sort, dd.dict_label, dd.dict_value, dd.dict_type, dd.is_type, dd.list_class, dd.theme, dd.is_default, dd.state, dd.create_by, dd.create_time, dd.update_by, dd.update_time, dd.remark
+        from sys_dict_data dd
+        left join sys_dict_type dt on dd.dict_type = dt.dict_type
+        where dd.state = '1' and  dt.state = '1'
+        order by dd.dict_sort asc
+    </select>
+    <select id="selectByType" resultType="cn.fateverse.admin.entity.DictData">
+        <include refid="selectDictData"/>
+        where dict_type = #{dictType} and state = '1'
+    </select>
+    <select id="selectCountByType" resultType="java.lang.Integer">
+        select count(1) from sys_dict_data where dict_type = #{dictType}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="dictCode" keyColumn="dict_code">
+        insert into sys_dict_data
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dictSort != null">dict_sort,</if>
+            <if test="dictLabel != null and dictLabel != ''">dict_label,</if>
+            <if test="dictValue != null and dictValue != ''">dict_value,</if>
+            <if test="dictType != null and dictType != ''">dict_type,</if>
+            <if test="isType != null and isType != ''">is_type,</if>
+            <if test="listClass != null and listClass != ''">list_class,</if>
+            <if test="theme != null and theme != ''">theme,</if>
+            <if test="isDefault != null and isDefault != ''">is_default,</if>
+            <if test="state != null and state != ''">state,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dictSort != null">#{dictSort},</if>
+            <if test="dictLabel != null and dictLabel != ''">#{dictLabel},</if>
+            <if test="dictValue != null and dictValue != ''">#{dictValue},</if>
+            <if test="dictType != null and dictType != ''">#{dictType},</if>
+            <if test="isType != null and isType != ''">#{isType},</if>
+            <if test="listClass != null and listClass != ''">#{listClass},</if>
+            <if test="theme != null and theme != ''">#{theme},</if>
+            <if test="isDefault != null and isDefault != ''">#{isDefault},</if>
+            <if test="state != null and state != ''">#{state},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="update">
+        update sys_dict_data
+        <set>
+            <if test="dictSort != null">dict_sort = #{dictSort},</if>
+            <if test="dictLabel != null and dictLabel != ''">dict_label = #{dictLabel},</if>
+            <if test="dictValue != null and dictValue != ''">dict_value = #{dictValue},</if>
+            <if test="dictType != null and dictType != ''">dict_type = #{dictType},</if>
+            <if test="isType != null">is_type = #{isType},</if>
+            <if test="listClass != null and listClass != ''">list_class = #{listClass},</if>
+            <if test="theme != null and theme != ''">theme = #{theme},</if>
+            <if test="isDefault != null">is_default = #{isDefault},</if>
+            <if test="state != null and state != ''">state = #{state},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </set>
+        where dict_code = #{dictCode}
+    </update>
+
+    <update id="updateByDictType">
+        update sys_dict_data set dict_type = #{dictType} where dict_type = #{newDictType}
+    </update>
+
+    <delete id="deleteByCode">
+        delete
+        from sys_dict_data
+        where dict_code = #{dictCode}
+    </delete>
+
+    <delete id="deleteBatch">
+        delete
+        from sys_dict_data
+        where dict_code in
+        <foreach collection="list" open="(" close=")" separator="," item="dictCode">
+            #{dictCode}
+        </foreach>
+    </delete>
+
+</mapper>

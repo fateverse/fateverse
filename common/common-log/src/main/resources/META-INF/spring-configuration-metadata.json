@@ -1,0 +1,21 @@
+{
+  "groups": [
+    {
+      "name": "operation-log",
+      "type": "cn.fateverse.log.config.OperationProperties",
+      "sourceType": "cn.fateverse.log.config.OperationProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "operation-log.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "cn.fateverse.log.config.OperationProperties"
+    },
+    {
+      "name": "operation-log.level",
+      "type": "cn.fateverse.common.log.enums.LogLeve",
+      "sourceType": "cn.fateverse.log.config.OperationProperties"
+    }
+  ]
+}

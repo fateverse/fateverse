@@ -1,0 +1,125 @@
+package ${packageName}.service.impl;
+
+import ${packageName}.entity.${ClassName};
+import ${packageName}.entity.dto.${ClassName}Dto;
+import ${packageName}.entity.vo.${ClassName}Vo;
+import ${packageName}.entity.query.${ClassName}Query;
+import ${packageName}.mapper.${ClassName}Mapper;
+import ${packageName}.service.${ClassName}Service;
+#if($table.hasOptionApi())
+import cn.fateverse.common.core.entity.Option;
+#end
+import cn.fateverse.common.core.result.page.TableDataInfo;
+import cn.fateverse.common.mybatisplus.utils.PageUtils;
+import cn.fateverse.common.security.utils.SecurityUtils;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * ${functionName} Controller
+ *
+ * @author ${author}
+ * @date ${dateTime}
+ */
+@Slf4j
+@Service
+public class ${ClassName}ServiceImpl implements ${ClassName}Service {
+
+    private final ${ClassName}Mapper ${className}Mapper;
+
+    private final List<String> columnNames = Arrays.asList(${table.getFieldList()});
+
+    public ${ClassName}ServiceImpl(${ClassName}Mapper ${className}Mapper) {
+        this.${className}Mapper = ${className}Mapper;
+    }
+
+    @Override
+    public ${ClassName}Vo searchById(${pkColumn.javaType} ${pkColumn.javaField}){
+        ${ClassName} ${className} = ${className}Mapper.selectById(${pkColumn.javaField});
+        return ${ClassName}Vo.to${ClassName}Vo(${className});
+    }
+
+    @Override
+    public TableDataInfo<${ClassName}Vo> searchList(${ClassName}Query query){
+        Page<${ClassName}> page = ${className}Mapper.selectPage(PageUtils.getPage(), buildQueryWrapper(query));
+        return PageUtils.convertDataTable(page, ${ClassName}Vo::to${ClassName}Vo);
+    }
+
+#if($table.hasOptionApi())
+    @Override
+    public List<Option> searchOptionList(){
+        LambdaQueryWrapper<Carousel> lqw = new LambdaQueryWrapper<>();
+        List<${ClassName}> list = ${className}Mapper.selectList(lqw);
+        return list.stream().map(item-> Option.builder()
+                          .value(item.get${table.getOptionValueFiled()})
+                          .label(item.get${table.getOptionLabelFiled()})
+                          .build()).collect(Collectors.toList())
+    }
+#end
+
+
+    @Override
+    public List<${ClassName}Vo> exportList(${ClassName}Query query){
+        List<${ClassName}> list = ${className}Mapper.selectList(buildQueryWrapper(query));
+        return list.stream().map(${ClassName}Vo::to${ClassName}Vo)
+                .collect(Collectors.toList());
+    }
+
+    public LambdaQueryWrapper<Carousel> buildQueryWrapper(${ClassName}Query query) {
+        LambdaQueryWrapper<Carousel> lqw = new LambdaQueryWrapper<>();
+        lqw.select(Carousel.class,e->columnNames.contains(e.getColumn()))
+#foreach($column in $columns)
+#if($column.query())
+#set($mpMethod=$column.queryType.toLowerCase())
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#if($queryType != 'BETWEEN')
+#if($column.javaType == 'String')
+#set($condition='!StrUtil.isBlank(query.get'+$AttrName+'())')
+#else
+#set($condition='query.get'+$AttrName+'() != null')
+#end
+                .$mpMethod($condition, ${ClassName}::get$AttrName, query.get$AttrName())
+#else
+                .between('query.getBegin$AttrName' != null && 'query.getEnd$AttrName' != null,
+                    ${ClassName}::get$AttrName ,'query.getBegin$AttrName', 'query.getBegin$AttrName')
+#end#end#end;
+        return lqw;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int save(${ClassName}Dto ${className}){
+        ${ClassName} info = ${className}.to${ClassName}();
+        info.setCreateBy(SecurityUtils.getUsername());
+        return ${className}Mapper.insert(info);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int edit(${ClassName}Dto ${className}){
+        ${ClassName} info = ${className}.to${ClassName}();
+        info.setUpdateBy(SecurityUtils.getUsername());
+        return ${className}Mapper.updateById(info);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int removeById(${pkColumn.javaType} ${pkColumn.javaField}){
+        return ${className}Mapper.deleteById(${pkColumn.javaField});
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int removeBatch(List<${pkColumn.javaType}> ${pkColumn.javaField}List){
+        return ${className}Mapper.deleteBatchIds(${pkColumn.javaField}List);
+    }
+
+}

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.fateverse.admin.mapper.RoleMapper">
+
+    <sql id="selectSql">
+        select role_id,
+               role_name,
+               role_key,
+               role_sort,
+               data_scope,
+               `state`,
+               del_flag,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark,
+               role_type
+        from sys_role
+    </sql>
+
+    <select id="selectList" resultType="cn.fateverse.admin.entity.Role">
+        <include refid="selectSql"/>
+        <where>
+            <if test="roleName != null and roleName != ''"> and role_name like concat('%',#{roleName} ,'%')</if>
+            <if test="roleKey != null and roleKey != ''"> and role_key like concat('%',#{roleKey} ,'%')</if>
+            <if test="state != null and state != ''"> and state = #{state}</if>
+            <if test="startTime != null and endTime != null">
+                and create_time &gt;= #{startTime}
+            </if>
+            <if test="startTime != null and endTime != null">
+                and create_time &lt;= #{endTime}
+            </if>
+        </where>
+    </select>
+    <select id="selectById" resultType="cn.fateverse.admin.entity.Role">
+        <include refid="selectSql"/>
+        where role_id = #{roleId}
+    </select>
+    <select id="hasUserByRoleId" resultType="java.lang.Integer">
+        select count(1)
+        from sys_role r
+        inner join sys_user_role ur on ur.role_id = r.role_id
+        where r.role_id = #{roleId}
+        limit 1
+    </select>
+    <select id="selectByRoleName" resultType="cn.fateverse.admin.entity.Role">
+        <include refid="selectSql"/>
+        where role_name = #{roleName} limit 0,1
+    </select>
+    <select id="selectByRoleKey" resultType="cn.fateverse.admin.entity.Role">
+        <include refid="selectSql"/>
+        where role_key = #{roleKey} limit 0,1
+    </select>
+
+    <select id="selectByIds" resultType="cn.fateverse.admin.entity.Role">
+        <include refid="selectSql"/>
+        where role_id in
+        <foreach collection="list" open="(" separator="," close=")" item="roleId">
+            #{roleId}
+        </foreach>
+    </select>
+
+    <select id="selectListByMenuId" resultType="cn.fateverse.admin.entity.Role">
+        <include refid="selectSql"/>
+        <where>
+            <if test="roleName != null and roleName != ''">and role_name like concat('%',#{roleName} ,'%')</if>
+            <if test="roleKey != null and roleKey != ''">and role_key like concat('%',#{roleKey} ,'%')</if>
+            <if test="menuId != null"> and role_id in (select role_id from sys_role_menu where menu_id = #{menuId})</if>
+        </where>
+    </select>
+
+    <select id="searchListExcludeMenuId" resultType="cn.fateverse.admin.entity.Role">
+        <include refid="selectSql"/>
+        <where>
+            <if test="roleName != null and roleName != ''">and role_name like concat('%',#{roleName} ,'%')</if>
+            <if test="roleKey != null and roleKey != ''">and role_key like concat('%',#{roleKey} ,'%')</if>
+            <if test="menuId != null"> and role_id not in (select role_id from sys_role_menu where menu_id = #{menuId})</if>
+        </where>
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyColumn="role_id" keyProperty="roleId">
+        insert into sys_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="roleName != null and roleName != ''">role_name,</if>
+            <if test="roleKey != null and roleKey != ''">role_key,</if>
+            <if test="roleSort != null">role_sort,</if>
+            <if test="state != null and state != ''">state,</if>
+            <if test="dataScope != null and dataScope != ''">data_scope,</if>
+            <if test="delFlag != null and delFlag != ''">del_flag,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="roleName != null and roleName != ''">#{roleName},</if>
+            <if test="roleKey != null and roleKey != ''">#{roleKey},</if>
+            <if test="roleSort != null">#{roleSort},</if>
+            <if test="state != null and state != ''">#{state},</if>
+            <if test="dataScope != null and dataScope != ''">#{dataScope},</if>
+            <if test="delFlag != null and delFlag != ''">#{delFlag},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="update">
+        update sys_role
+        <set>
+            <if test="roleName != null and roleName != ''">role_name = #{roleName},</if>
+            <if test="roleKey != null and roleKey != ''">role_key = #{roleKey},</if>
+            <if test="roleSort != null">role_sort = #{roleSort},</if>
+            <if test="state != null and state != ''">state=#{state},</if>
+            <if test="dataScope != null and dataScope != ''">data_scope=#{dataScope},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag=#{delFlag},</if>
+            <if test="remark != null and remark != ''">remark=#{remark},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </set>
+        where role_id = #{roleId}
+    </update>
+
+
+    <delete id="delete">
+        delete from sys_role where role_id = #{roleId}
+    </delete>
+
+
+
+</mapper>

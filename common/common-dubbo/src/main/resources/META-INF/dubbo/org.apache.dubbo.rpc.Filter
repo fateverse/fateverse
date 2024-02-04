@@ -1,0 +1,1 @@
+demoProviderFilter=cn.fateverse.common.dubbo.DubboSentinelFilter

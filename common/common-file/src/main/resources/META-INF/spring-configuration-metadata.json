@@ -1,0 +1,105 @@
+{
+  "groups": [
+    {
+      "name": "file.store.aliyun",
+      "type": "cn.fateverse.oss.config.AliyunProperties",
+      "sourceType": "cn.fateverse.oss.config.AliyunProperties"
+    },
+    {
+      "name": "file.store.minio",
+      "type": "cn.fateverse.oss.config.MinioProperties",
+      "sourceType": "cn.fateverse.oss.config.MinioProperties"
+    },
+    {
+      "name": "file.store.ftp",
+      "type": "cn.fateverse.oss.config.FTPProperties",
+      "sourceType": "cn.fateverse.oss.config.FTPProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "file.store.aliyun.endpoint",
+      "type": "java.lang.String",
+      "sourceType": "cn.fateverse.oss.config.AliyunProperties"
+    },
+    {
+      "name": "file.store.aliyun.access-key-id",
+      "type": "java.lang.String",
+      "sourceType": "cn.fateverse.oss.config.AliyunProperties"
+    },
+    {
+      "name": "file.store.aliyun.secret-access-key",
+      "type": "java.lang.String",
+      "sourceType": "cn.fateverse.oss.config.AliyunProperties"
+    },
+    {
+      "name": "file.store.aliyun.bucket",
+      "type": "java.lang.String",
+      "sourceType": "cn.fateverse.oss.config.AliyunProperties"
+    },
+    {
+      "name": "file.store.aliyun.file-host",
+      "type": "java.lang.String",
+      "sourceType": "cn.fateverse.oss.config.AliyunProperties"
+    },{
+      "name": "file.store.minio.access-key",
+      "type": "java.lang.String",
+      "sourceType": "cn.fateverse.oss.config.MinioProperties"
+    },
+    {
+      "name": "file.store.minio.secret-key",
+      "type": "java.lang.String",
+      "sourceType": "cn.fateverse.oss.config.MinioProperties"
+    },
+    {
+      "name": "file.store.minio.bucket",
+      "type": "java.lang.String",
+      "sourceType": "cn.fateverse.oss.config.MinioProperties"
+    },
+    {
+      "name": "file.store.minio.endpoint",
+      "type": "java.lang.String",
+      "sourceType": "cn.fateverse.oss.config.MinioProperties"
+    },
+    {
+      "name": "file.store.ftp.address",
+      "type": "java.lang.String",
+      "sourceType": "cn.fateverse.oss.config.FTPProperties"
+    },
+    {
+      "name": "file.store.ftp.port",
+      "type": "java.lang.Integer",
+      "sourceType": "cn.fateverse.oss.config.FTPProperties"
+    },
+    {
+      "name": "file.store.ftp.username",
+      "type": "java.lang.String",
+      "sourceType": "cn.fateverse.oss.config.FTPProperties"
+    },
+    {
+      "name": "file.store.ftp.password",
+      "type": "java.lang.String",
+      "sourceType": "cn.fateverse.oss.config.FTPProperties"
+    },
+    {
+      "name": "file.store.ftp.encoding",
+      "type": "java.lang.String",
+      "sourceType": "cn.fateverse.oss.config.FTPProperties"
+    },
+    {
+      "name": "file.store.ftp.asset",
+      "type": "java.lang.String",
+      "sourceType": "cn.fateverse.oss.config.FTPProperties"
+    },
+    {
+      "name": "file.store.ftp.pubfiles",
+      "type": "java.lang.String",
+      "sourceType": "cn.fateverse.oss.config.FTPProperties"
+    },
+    {
+      "name": "file.store.ftp.prifiles",
+      "type": "java.lang.String",
+      "sourceType": "cn.fateverse.oss.config.FTPProperties"
+    }
+  ]
+}

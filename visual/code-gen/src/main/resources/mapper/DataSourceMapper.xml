@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.fateverse.code.mapper.DataSourceMapper">
+
+    <sql id="DataSource">
+        select ds_id,
+               ds_name,
+               username,
+               password,
+               host,
+               port,
+               type,
+               args,
+               params,
+               db_name,
+               jdbc_url,
+               conf_type,
+               remark,
+               create_by,
+               create_time,
+               update_by,
+               update_time
+        from gen_data_source
+    </sql>
+
+    <select id="selectList" resultType="cn.fateverse.code.entity.CodeDataSource">
+        <include refid="DataSource"/>
+        <where>
+            <if test="dsName != null and dsName != ''">and ds_name like concat('%',#{dsName},'%')</if>
+        </where>
+    </select>
+
+
+    <select id="selectById" resultType="cn.fateverse.code.entity.CodeDataSource">
+        <include refid="DataSource"/>
+        where ds_id = #{dsId}
+    </select>
+
+
+    <insert id="insert">
+        insert into gen_data_source
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dsName != null and dsName != ''">ds_name,</if>
+            <if test="username != null and username != ''">username,</if>
+            <if test="password != null and password != ''">`password`,</if>
+            <if test="host != null and host != ''">`host`,</if>
+            <if test="port != null and port != ''">`port`,</if>
+            <if test="type != null ">type,</if>
+            <if test="args != null and args != ''">args,</if>
+            <if test="params != null and params != ''">params,</if>
+            <if test="dbName != null and dbName != ''">db_name,</if>
+            <if test="jdbcUrl != null and jdbcUrl != ''">jdbc_url,</if>
+            <if test="confType != null and confType != ''">conf_type,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dsName != null and dsName != ''">#{dsName},</if>
+            <if test="username != null and username != ''">#{username},</if>
+            <if test="password != null and password != ''">#{password},</if>
+            <if test="host != null and host != ''">#{host},</if>
+            <if test="port != null and port != ''">#{port},</if>
+            <if test="type != null ">#{type},</if>
+            <if test="args != null and args != ''">#{args},</if>
+            <if test="params != null and params != ''">#{params},</if>
+            <if test="dbName != null and dbName != ''">#{dbName},</if>
+            <if test="jdbcUrl != null and jdbcUrl != ''">#{jdbcUrl},</if>
+            <if test="confType != null and confType != ''">#{confType},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="update">
+        update gen_data_source
+        <set>
+            <if test="dsName != null and dsName != ''">ds_name = #{dsName},</if>
+            <if test="username != null and username != ''">username = #{username},</if>
+            <if test="password != null and password != ''">`password` = #{password},</if>
+            <if test="host != null and host != ''">`host` = #{host},</if>
+            <if test="port != null and port != ''">`port`=#{port},</if>
+            <if test="type != null ">type=#{type},</if>
+            <if test="args != null and args != ''">args=#{args},</if>
+            <if test="params != null and params != ''">params=#{params},</if>
+            <if test="dbName != null and dbName != ''">db_name=#{dbName},</if>
+            <if test="jdbcUrl != null and jdbcUrl != ''">jdbc_url = #{jdbcUrl},</if>
+            <if test="confType != null and confType != ''">conf_type= #{confType},</if>
+            <if test="updateBy != null and updateBy != ''">update_by=#{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </set>
+        where ds_id = #{dsId}
+    </update>
+
+    <delete id="delete">
+        delete
+        from gen_data_source
+        where ds_id = #{id}
+    </delete>
+
+
+</mapper>

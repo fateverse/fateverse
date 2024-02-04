@@ -1,0 +1,353 @@
+<template>
+    <el-form :model="queryParams" inline class="query-form" ref="queryForm">
+#foreach($column in $columns)
+#if($column.query())
+#set($comment=$column.comment())
+#if($column.isInput())
+        <el-form-item label="${comment}" prop="${column.javaField}">
+            <el-input v-model="queryParams.${column.javaField}" placeholder="请输${comment}"></el-input>
+        </el-form-item>
+#elseif(($column.isSelect() || $column.isRadio()) && $column.isDict())
+        <el-form-item label="${comment}" prop="${column.javaField}">
+            <el-select v-model="queryParams.${column.javaField}" placeholder="请选择${comment}" clearable >
+                <el-option
+                  v-for="dict in cacheStore.getDict('${column.dictType}')"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+            </el-select>
+        </el-form-item>
+#elseif(($column.isSelect() || $column.isRadio()) && !$column.isDict())
+        <el-form-item label="${comment}" prop="${column.javaField}">
+            <el-select v-model="queryParams.${column.javaField}" placeholder="请选择${comment}" clearable >
+                <el-option label="请选择字典生成" value="" />
+            </el-select>
+        </el-form-item>
+#elseif($column.isDatetime() && !$column.isBetween())
+    <el-form-item label="${comment}" prop="${column.javaField}">
+        <el-date-picker clearable size="small"
+                        v-model="queryParams.${column.javaField}"
+                        type="date"
+                        value-format="yyyy-MM-dd"
+                        placeholder="选择${comment}">
+        </el-date-picker>
+    </el-form-item>
+#elseif($column.isDatetime() && $column.isBetween())
+        <el-form-item label="${comment}">
+            <el-date-picker
+              v-model="daterange${column.getAttrName()}"
+              size="small"
+              style="width: 240px"
+              value-format="yyyy-MM-dd"
+              type="daterange"
+              range-separator="-"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+            ></el-date-picker>
+        </el-form-item>
+#end
+#end
+#end
+        <el-form-item>
+            <el-button type="primary" @click="handleSearch()" :icon="Search">搜索</el-button>
+            <el-button @click="handleReset" :icon="Refresh">重置</el-button>
+        </el-form-item>
+    </el-form>
+    <div class="query-btn">
+        <el-button type="primary" v-perm="['${permissionPrefix}:add']" @click="handleAdd" :icon="Plus" plain>新增</el-button>
+        <el-button type="danger" v-perm="['${permissionPrefix}:del']" @click="handleDelete" :icon="Delete" plain :disabled="disabled">删除</el-button>
+        <el-button type="warning" v-perm="['${permissionPrefix}:export']" @click="handleExport" :icon="Download" plain>导出</el-button>
+    </div>
+    <div class="table">
+        <el-table
+          :data="list"
+          row-key="${pkColumn.javaField}"
+          :lazy="true"
+          ref="singleTable"
+          v-loading="loading"
+          @select="handleSelect"
+        >
+            <el-table-column type="selection" width="55"/>
+            <el-table-column label="序号" type="index" class-name="allowDrag"/>
+#foreach($column in $columns)
+#if($column.list())
+#set($comment=$column.comment())
+#if($column.listAndDict())
+            <el-table-column prop="${column.javaField}" label="${comment}" align="center">
+                <template #default="scope">
+                    <tag dict-type="${column.dictType}" :value="scope.row.${column.javaField}"/>
+                </template>
+            </el-table-column>
+#else
+            <el-table-column prop="${column.javaField}" label="${comment}" align="center"/>
+#end
+#end
+#end
+            <el-table-column label="操作">
+                <template #default="scope">
+                    <el-button type="text" size="mini" v-perm="['${permissionPrefix}:edit']"
+                               @click="handleEdit(scope.row.${pkColumn.javaField})" :icon="Edit">编辑
+                    </el-button>
+                    <el-button type="text" size="mini" v-perm="['${permissionPrefix}:del']" @click="handleDelete(scope.row)"
+                               :icon="Delete">删除
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </div>
+    <el-config-provider>
+        <el-pagination
+          v-model:current-page="pageInfo.pageNum"
+          v-model:page-size="pageInfo.pageSize"
+          :page-sizes="[10, 20, 30, 40,50]"
+          :background="true"
+          layout="->,total, sizes, prev, pager, next, jumper"
+          :total="total"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+    </el-config-provider>
+
+    <el-dialog v-model="isVisited" :title="title" width="900px">
+        <el-form :model="form" ref="formInstance" :rules="formRules" label-width="100px" class="dialog-form">
+            <el-row>
+#foreach($column in $columns)
+#if($column.from())
+#set($comment=$column.comment())
+#if($velocityCount % 2 == 1)
+                <el-col :span="11"  :offset="2">
+#else
+                <el-col :span="11">
+#end
+#if($column.isInput())
+                    <el-form-item label="${comment}" prop="${column.javaField}">
+                        <el-input v-model="form.${column.javaField}" placeholder="请输入${comment}"></el-input>
+                    </el-form-item>
+#elseif($column.isSelect() && $column.isDict())
+                    <el-form-item label="${comment}" prop="${column.javaField}">
+                        <el-select v-model="form.${column.javaField}" placeholder="请选择${comment}" clearable >
+                            <el-option
+                              v-for="dict in cacheStore.getDict('${column.dictType}')"
+                              :key="dict.value"
+                              :label="dict.label"
+                              :value="dict.value"
+                            />
+                        </el-select>
+                    </el-form-item>
+#elseif($column.isSelect() && !$column.isDict())
+                    <el-form-item label="${comment}" prop="${column.javaField}">
+                        <el-select v-model="form.${column.javaField}" placeholder="请选择${comment}">
+                            <el-option label="请选择字典生成" value="" />
+                        </el-select>
+                    </el-form-item>
+#end
+                </el-col>
+#end
+#end
+            </el-row>
+        </el-form>
+    <template #footer>
+      <span>
+        <el-button @click="handleCancel">取消</el-button>
+        <el-button type="primary" @click="handleSubmit(formInstance)">确定</el-button>
+      </span>
+    </template>
+
+    </el-dialog>
+</template>
+
+<script setup>
+import { get${ClassName}List, get${ClassName}Details, add${ClassName}, edit${ClassName}, del${ClassName} } from "@/api/${moduleName}/${businessName}";
+import {Search, Refresh, Delete, Plus, Edit, Download} from '@element-plus/icons-vue'
+import {ElMessage, ElMessageBox} from "element-plus";
+#if($table.hasDictSelect())
+import { useCacheStore } from '@/stores/cache.js'
+const cacheStore = useCacheStore()
+cacheStore.setCacheKey([${table.getDictType()}])
+#end
+#if($table.hasListAndDict())
+import Tag from '@/components/Tag.vue'
+#end
+import {downLoadExcel} from "@/utils/downloadZip";
+//查询参数
+const queryParams = reactive({
+#foreach ($column in $columns)
+#if($column.query())
+    $column.javaField:#if("String" == $column.javaType) ''#else undefined#end,
+#end
+#end
+})
+//页面信息
+const pageInfo = reactive({
+    pageNum: 1,
+    pageSize: 10,
+})
+const disabled = ref(true)
+const list = ref([])
+const queryForm = ref([])
+const loading = ref(true)
+const total = ref()
+const title = ref('')
+const isVisited = ref(false)
+const form = ref()
+const formInstance = ref()
+const formRules = ref({
+#foreach ($column in $columns)
+#if($column.required())
+#set($comment=$column.comment())
+$column.javaField: [
+        { required: true, message: "${comment}不能为空", trigger: #if($column.htmlType == "select")"change"#else"blur"#end },
+#if($column.isRegular != 1)
+        { pattern: /${column.regular}/, message: '${column.columnComment}格式有误', trigger:"blur"},
+#end
+    ]#if($velocityCount != $columns.size()),#end
+
+#end
+#end
+})
+//搜索功能
+const handleSearch = () => {
+    getList()
+}
+//重置搜索
+const handleReset = () => {
+    queryForm.value.resetFields()
+    getList()
+}
+//获取数据
+const getList = async () => {
+    let params = {
+        ...queryParams,
+        ...pageInfo
+    }
+    get${ClassName}List(params).then(res => {
+        if (res.code === 1000) {
+            list.value = res.data.rows
+            total.value = res.data.total
+            loading.value = false
+        } else {
+            ElMessage.error(res.msg)
+        }
+    })
+}
+//重置from表单
+const restFrom = () => {
+    form.value = {
+#foreach ($column in $columns)
+#if($column.from())
+#if($column.fromValue())
+#if($column.isRadio())
+        $column.javaField: ${column.getDefaultRadio()}#if($velocityCount != $columns.size()),#end
+#elseif($column.isCheckbox())
+        $column.javaField: []#if($velocityCount != $columns.size()),#end
+#else
+        $column.javaField: null#if($velocityCount != $columns.size()),#end
+
+#end
+#end
+#end
+#end
+    }
+}
+//取消
+const handleCancel = () => {
+    restFrom()
+    isVisited.value = false
+}
+//提交
+const handleSubmit = async (instance) => {
+    if (!instance) return
+    instance.validate(async (valid) => {
+        if (!valid) return
+        if (title.value === '新增${functionName}') {
+            add${ClassName}(form.value).then(res => {
+                if (res.code === 1000) {
+                    ElMessage.success(res.msg)
+                    getList()
+                    isVisited.value = false
+                } else {
+                    ElMessage.error(res.msg)
+                }
+            })
+        } else {
+            edit${ClassName}(form.value).then(res => {
+                if (res.code === 1000) {
+                    ElMessage.success(res.msg)
+                    getList()
+                    isVisited.value = false
+                } else {
+                    ElMessage.error(res.msg)
+                }
+            })
+        }
+    })
+}
+//添加
+const handleAdd = async () => {
+    restFrom()
+    title.value = "新增${functionName}"
+    isVisited.value = true
+}
+//修改
+const handleEdit = async (${pkColumn.javaField}) => {
+    restFrom()
+    get${ClassName}Details(${pkColumn.javaField}).then(res => {
+        if (res.code === 1000) {
+            form.value = res.data
+            title.value = "编辑${functionName}"
+            isVisited.value = true
+        } else {
+            ElMessage.error(res.msg)
+        }
+    })
+}
+//导出excel
+const handleExport = () => {
+    downLoadExcel('/${serviceName}/${moduleName}/${businessName}/export',{...queryParams})
+}
+
+//勾选table数据行的 Checkbox
+const handleSelect = async (selection, row) => {
+    if (selection.length !== 0) {
+        disabled.value = false
+        ${pkColumn.javaField}.value = row.${pkColumn.javaField}
+        if (selection.length > 1) {
+            const del_row = selection.shift();
+            singleTable.value.toggleRowSelection(del_row, false);
+        }
+    } else {
+        disabled.value = true
+    }
+}
+
+//切换每页显示条数
+const handleSizeChange = async (val) => {
+    pageInfo.value.pageSize = val
+    await getList()
+}
+
+//点击页码进行分页功能
+const handleCurrentChange = async (val) => {
+    pageInfo.value.pageNum = val
+    await getList()
+}
+//删除
+const handleDelete = async ({dsName, ${pkColumn.javaField}}) => {
+    ElMessageBox.confirm(`确认删除名称为${dsName}的${functionName}吗?`, '系统提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+    }).then(() => {
+        del${ClassName}(${pkColumn.javaField}).then(res => {
+            if (res.code === 1000) {
+                ElMessage.success(res.msg)
+                getList()
+            } else {
+                ElMessage.error(res.msg)
+            }
+        })
+    })
+}
+getList()
+</script>

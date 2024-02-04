@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cn.fateverse</groupId>
+    <artifactId>fateverse</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0</version>
+
+    <name>fateverse</name>
+    <description>FateVerse后端系统</description>
+
+
+
+    <modules>
+        <module>gateway</module>
+        <module>common</module>
+        <module>auth</module>
+        <module>admin</module>
+        <module>visual</module>
+        <module>notice</module>
+        <module>log</module>
+    </modules>
+
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
+        <jwt.version>0.9.1</jwt.version>
+        <nacos.client>2.0.3</nacos.client>
+        <seata.version>1.5.1</seata.version>
+        <kaptcha.version>2.3.2</kaptcha.version>
+        <swagger.version>3.0.0</swagger.version>
+        <redisson.version>3.15.4</redisson.version>
+        <hutool.version>5.8.18</hutool.version>
+        <easyexcel.version>3.1.3</easyexcel.version>
+        <minio.oss.version>1.2.1</minio.oss.version>
+        <knife4j.ui.version>3.0.3</knife4j.ui.version>
+        <spring-boot.version>2.7.3</spring-boot.version>
+        <admin.server.version>2.7.3</admin.server.version>
+        <spring-cloud.version>2021.0.3</spring-cloud.version>
+        <swagger.annotations.version>1.6.8</swagger.annotations.version>
+        <spring-cloud-alibaba.version>2021.0.1.0</spring-cloud-alibaba.version>
+    </properties>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- spring boot 依赖 -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- spring cloud 依赖 -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- spring cloud alibaba 依赖 -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!--Token生成与解析-->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jwt.version}</version>
+            </dependency>
+            <!-- SpringBoot Admin -->
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-starter-server</artifactId>
+                <version>${admin.server.version}</version>
+            </dependency>
+            <!-- SpringBoot 客户端 -->
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-starter-client</artifactId>
+                <version>${admin.server.version}</version>
+            </dependency>
+            <!--验证码 -->
+            <dependency>
+                <groupId>com.github.penggle</groupId>
+                <artifactId>kaptcha</artifactId>
+                <version>${kaptcha.version}</version>
+            </dependency>
+            <!-- hutool 的依赖配置-->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-bom</artifactId>
+                <version>${hutool.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!--swagger生成API文档-->
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-boot-starter</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+            <!--swagger ui 美化文档-->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-spring-boot-starter</artifactId>
+                <version>${knife4j.ui.version}</version>
+            </dependency>
+            <!--redisson 分布式锁-->
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>${redisson.version}</version>
+            </dependency>
+            <!--  seata kryo 序列化-->
+            <dependency>
+                <groupId>io.seata</groupId>
+                <artifactId>seata-serializer-kryo</artifactId>
+                <version>${seata.version}</version>
+            </dependency>
+
+            <!--admin-api dubbo接口暴露-->
+            <dependency>
+                <groupId>cn.fateverse</groupId>
+                <artifactId>admin-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!--log rpc 暴露-->
+            <dependency>
+                <groupId>cn.fateverse</groupId>
+                <artifactId>log-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- 消息通知rpc暴露 -->
+            <dependency>
+                <groupId>cn.fateverse</groupId>
+                <artifactId>notice-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.fateverse</groupId>
+                <artifactId>common-code</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- Common Core 核心依赖 -->
+            <dependency>
+                <groupId>cn.fateverse</groupId>
+                <artifactId>common-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- Common Decrypt 国密4 mvc 加密模块 -->
+            <dependency>
+                <groupId>cn.fateverse</groupId>
+                <artifactId>common-decrypt</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!--dubbo rpc 通信模块-->
+            <dependency>
+                <groupId>cn.fateverse</groupId>
+                <artifactId>common-dubbo</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- 邮件发送模块 -->
+            <dependency>
+                <groupId>cn.fateverse</groupId>
+                <artifactId>common-email</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- 文件上传模块 -->
+            <dependency>
+                <groupId>cn.fateverse</groupId>
+                <artifactId>common-file</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- 分布式锁模块 -->
+            <dependency>
+                <groupId>cn.fateverse</groupId>
+                <artifactId>common-lock</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!--Common Log 系统日志收集模块 -->
+            <dependency>
+                <groupId>cn.fateverse</groupId>
+                <artifactId>common-log</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!--Common Mybatis 数据库持久化模块-->
+            <dependency>
+                <groupId>cn.fateverse</groupId>
+                <artifactId>common-mybatis</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!--Common Mybatis-Plus 数据库持久化模块-->
+            <dependency>
+                <groupId>cn.fateverse</groupId>
+                <artifactId>common-mybatis-puls</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!--Common Redis redis 模块-->
+            <dependency>
+                <groupId>cn.fateverse</groupId>
+                <artifactId>common-redis</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- 分布式事务seata 模块 -->
+            <dependency>
+                <groupId>cn.fateverse</groupId>
+                <artifactId>common-seata</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!--Common Security 安全模块-->
+            <dependency>
+                <groupId>cn.fateverse</groupId>
+                <artifactId>common-security</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!--Common Swagger 注解文档模块-->
+            <dependency>
+                <groupId>cn.fateverse</groupId>
+                <artifactId>common-swagger</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!--Common Netty实现的Websocket集群 模块-->
+            <dependency>
+                <groupId>cn.fateverse</groupId>
+                <artifactId>common-websocket</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.fateverse</groupId>
+                <artifactId>common-excel</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+    <dependencies>
+        <!--注册中心客户端-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.alibaba.nacos</groupId>
+                    <artifactId>nacos-client</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!--dubbo版本需要-->
+        <dependency>
+            <groupId>com.alibaba.nacos</groupId>
+            <artifactId>nacos-client</artifactId>
+            <version>${nacos.client}</version>
+            <scope>compile</scope>
+        </dependency>
+        <!--配置中心客户端-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.alibaba.nacos</groupId>
+                    <artifactId>nacos-client</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!--配置文件处理器-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!-- bootstrap 启动器 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+        </dependency>
+        <!--spring校验依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.codecentric</groupId>
+            <artifactId>spring-boot-admin-starter-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>alimaven</id>
+            <name>aliyun maven</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>release</id>
+            <url>http://nexus.feashow.cn/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshot</id>
+            <url>http://nexus.feashow.cn/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>

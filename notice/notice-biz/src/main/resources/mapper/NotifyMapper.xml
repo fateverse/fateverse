@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.fateverse.notice.mapper.NotifyMapper">
+
+    <select id="selectNoticeList" resultType="cn.fateverse.notice.entity.Notice">
+        select sn.notice_id, sn.notice_title, sn.notice_type, sn.send_type, sn.sender_ids, sn.content_type, sn.cluster, sn.remark,
+               sun.state
+        from sys_notice sn
+        left join sys_user_notice sun on sn.notice_id = sun.notice_id
+        <where>
+            and sn.state = '1'
+            <if test="userId !=null"> and sun.user_id = #{userId}</if>
+            <if test="cluster !=null"> and sn.cluster = #{cluster}</if>
+            <if test="state !=null"> and sun.state = #{state}</if>
+        </where>
+    </select>
+
+    <select id="selectNoticeByNoticeId" resultType="cn.fateverse.notice.entity.Notice">
+        select sn.notice_id, sn.notice_title, sn.notice_type, sn.notice_content, sn.send_type, sn.sender_ids, sn.content_type, sn.cluster, sn.remark,
+               sun.state
+        from sys_notice sn
+        left join sys_user_notice sun on sn.notice_id = sun.notice_id
+        where sn.state = '1' and sn.notice_id = #{noticeId} and sun.user_id = #{userId}
+    </select>
+
+</mapper>

@@ -1,0 +1,86 @@
+package ${packageName}.service;
+
+import ${packageName}.entity.dto.${ClassName}Dto;
+import ${packageName}.entity.vo.${ClassName}Vo;
+import ${packageName}.entity.query.${ClassName}Query;
+#if($table.hasOptionApi())
+import cn.fateverse.common.core.entity.Option;
+#end
+import cn.fateverse.common.core.result.page.TableDataInfo;
+
+import java.util.List;
+
+/**
+ * ${functionName} Service
+ *
+ * @author ${author}
+ * @date ${dateTime}
+ */
+public interface ${ClassName}Service {
+
+    /**
+     * 查询${functionName}
+     *
+     * @param ${pkColumn.javaField} ${functionName}Id
+     * @return ${functionName}
+     */
+    ${ClassName}Vo searchById(${pkColumn.javaType} ${pkColumn.javaField});
+
+    /**
+     * 查询${functionName}列表
+     *
+     * @param query ${functionName}
+     * @return ${functionName}集合
+     */
+    TableDataInfo<${ClassName}Vo> searchList(${ClassName}Query query);
+
+    /**
+     * 查询${functionName}option
+     *
+     * @return 选项集合
+     */
+#if($table.hasOptionApi())
+    List<Option> searchOptionList();
+#end
+
+    /**
+    * 导出${functionName}列表
+     *
+     * @param query query ${functionName}
+     * @return ${functionName}集合
+    */
+    List<${ClassName}Vo> exportList(${ClassName}Query query);
+
+    /**
+     * 新增${functionName}
+     *
+     * @param ${className} ${functionName}
+     * @return 结果
+     */
+    int save(${ClassName}Dto ${className});
+
+    /**
+     * 修改${functionName}
+     *
+     * @param ${className} ${functionName}
+     * @return 结果
+     */
+    int edit(${ClassName}Dto ${className});
+
+    /**
+     * 删除${functionName}
+     *
+     * @param ${pkColumn.javaField} 需要删除的${functionName}Id
+     * @return 结果
+     */
+    int removeById(${pkColumn.javaType} ${pkColumn.javaField});
+
+    /**
+     * 批量删除${functionName}
+     *
+     * @param ${pkColumn.javaField}List 需要删除的${functionName}Id 集合
+     * @return 结果
+     */
+    int removeBatch(List<${pkColumn.javaType}> ${pkColumn.javaField}List);
+
+}
