@@ -319,15 +319,4 @@
         </repository>
     </repositories>
 
-    <distributionManagement>
-        <repository>
-            <id>release</id>
-            <url>http://nexus.feashow.cn/repository/maven-releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshot</id>
-            <url>http://nexus.feashow.cn/repository/maven-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
-
 </project>
