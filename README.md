@@ -34,6 +34,7 @@ FateVerse
      ├── common-file -- 分布式文件存储
      ├── common-lock -- 分布式锁模块
      ├── common-mybatis -- mybatis 扩展封装
+     ├── common-mybatis-puls -- mybatis-puls 扩展封装
      ├── common-redis -- redis序列化封装
      ├── common-seata -- seata模块
      ├── common-security -- 系统权限控制模块
