@@ -50,8 +50,7 @@ FateVerse
 └── visual -- 图形化管理模块
      ├── code-gen -- 代码生成模块
      ├── monitor -- 服务监控
-     ├── sentinel-dashboard -- sentinel 官方版
-     └── sentinel-dashboard-pro -- sentinel 线上版,集成nacos
+     └── sentinel-dashboard -- sentinel 官方版
 ```
 
 ### 本地开发 运行
