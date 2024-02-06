@@ -17,6 +17,11 @@ import java.util.StringJoiner;
 public class MappingSwitchInfo {
 
     /**
+     * key作为唯一编号
+     */
+    private String key;
+
+    /**
      * 应用名称
      */
     private String applicationName;
@@ -42,6 +47,11 @@ public class MappingSwitchInfo {
     private Set<String> uris;
 
     /**
+     * 当前开关类型
+     */
+    private MappingSwitchType type;
+
+    /**
      * 当前方法请求类型
      */
     private Set<String> httpMethods;
@@ -56,6 +66,19 @@ public class MappingSwitchInfo {
          * redis 的前缀
          */
         public static String MAPPING_SWITCH = "mapping:switch:";
+    }
+
+
+    public static enum MappingSwitchType {
+        /**
+         * 类注解
+         */
+        CLASS,
+
+        /**
+         * 方法注解
+         */
+        METHOD
     }
 
     /**

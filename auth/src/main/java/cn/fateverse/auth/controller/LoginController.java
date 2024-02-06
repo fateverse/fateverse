@@ -5,7 +5,6 @@ import cn.fateverse.auth.entity.UserInfo;
 import cn.fateverse.auth.entity.LoginBody;
 import cn.fateverse.auth.service.LoginService;
 import cn.fateverse.common.core.result.Result;
-import cn.fateverse.common.security.annotation.MappingSwitch;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
@@ -29,7 +28,6 @@ public class LoginController {
 
     @ApiOperation("登录")
     @PostMapping("/login")
-    @MappingSwitch("登录")
     public Result<String> login(@Validated @RequestBody LoginBody login) {
         return Result.ok("登录成功",loginService.login(login));
     }

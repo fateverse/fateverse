@@ -14,7 +14,7 @@ import java.lang.annotation.*;
 public @interface MappingSwitch {
 
     /**
-     * value: 作为存储使用的key,不填写则默认使用uri
+     * 描述信息
      */
     String value() default "";
 

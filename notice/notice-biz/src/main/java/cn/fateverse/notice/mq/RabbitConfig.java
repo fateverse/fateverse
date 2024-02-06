@@ -1,6 +1,6 @@
 package cn.fateverse.notice.mq;
 
-import cn.fateverse.common.websocket.config.NoticeProperties;
+import cn.fateverse.notice.config.NoticeProperties;
 import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

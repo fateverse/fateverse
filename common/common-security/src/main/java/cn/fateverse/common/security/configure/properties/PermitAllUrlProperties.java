@@ -73,6 +73,7 @@ public class PermitAllUrlProperties implements InitializingBean, ApplicationCont
                     String[] value = requestMapping.value();
                     for (String path : value) {
                         urls.add(mvcPath + path + "/**");
+                        urls.add(mvcPath + path);
                     }
                 }
             }

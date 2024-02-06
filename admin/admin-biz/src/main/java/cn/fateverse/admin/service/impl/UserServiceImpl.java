@@ -147,6 +147,7 @@ public class UserServiceImpl implements UserService {
         User info = userMapper.selectByEmail(user.getEmail());
         return checkUser(info, userId);
     }
+
     @Override
     public List<UserVo> searchListByRoleId(Long roleId, String userName, String phoneNumber) {
         return userMapper.selectUserListByRoleId(roleId, userName, phoneNumber);
@@ -256,14 +257,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserVo> searchListByDeptId(Long deptId, String userName, String phoneNumber) {
-        return userMapper.searchListByDeptId(deptId,userName,phoneNumber);
+        return userMapper.searchListByDeptId(deptId, userName, phoneNumber);
     }
 
     @Override
     public TableDataInfo<UserVo> searchUserListByExcludeDeptId(Long deptId, String userName, String phoneNumber) {
         PageUtils.startPage();
         Dept dept = deptMapper.selectById(deptId);
-        if (null == dept){
+        if (null == dept) {
             throw new CustomException("当前部门不存在");
         }
 //        dept.getAncestors()
@@ -298,6 +299,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int edit(UserDto dto) {
+        if (dto.getUserId().equals(1L)) {
+            throw new RuntimeException("超级管理员不允许操作!");
+        }
         checkUser(dto);
         batchUserRole(dto, Boolean.TRUE);
         batchUserPost(dto, Boolean.TRUE);
@@ -309,6 +313,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int remove(Long userId) {
+        if (userId.equals(1L)) {
+            throw new RuntimeException("超级管理员不允许操作!");
+        }
+        userRoleMapper.deleteByUserId(userId);
+        userPostMapper.deleteByUserId(userId);
         return userMapper.deleteByUserId(userId);
     }
 

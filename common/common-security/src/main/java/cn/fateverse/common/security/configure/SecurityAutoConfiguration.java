@@ -5,7 +5,6 @@ import cn.fateverse.common.security.configure.properties.DemoSwitchProperties;
 import cn.fateverse.common.security.configure.properties.PermitAllUrlProperties;
 import cn.fateverse.common.security.filter.AuthenticationTokenFilter;
 import cn.fateverse.common.security.handle.*;
-import cn.fateverse.common.security.service.MappingSwitchService;
 import cn.fateverse.common.security.service.PermissionService;
 import cn.fateverse.common.security.service.TokenService;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
@@ -90,8 +89,8 @@ public class SecurityAutoConfiguration {
     }
 
     @Bean
-    public MappingSwitchService mappingSwitchService(){
-        return new MappingSwitchService();
+    public MappingSwitchConfiguration mappingSwitchService(){
+        return new MappingSwitchConfiguration();
     }
 
 

@@ -10,7 +10,6 @@ import cn.fateverse.notice.entity.UserInfo;
 import cn.fateverse.notice.mq.RabbitConfig;
 import cn.fateverse.common.security.entity.LoginUser;
 import cn.fateverse.common.security.service.TokenService;
-import cn.fateverse.common.websocket.handler.WebSocketServerHandler;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import io.netty.channel.*;
@@ -35,7 +34,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @ChannelHandler.Sharable
 @Component
-public class NoticeSocketServerHandler extends WebSocketServerHandler<TextWebSocketFrame> {
+public class NoticeSocketServerHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
 
     private final RedisTemplate<String, UserInfo> redisTemplate;
 

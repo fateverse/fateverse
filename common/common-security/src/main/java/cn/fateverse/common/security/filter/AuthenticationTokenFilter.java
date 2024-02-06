@@ -32,7 +32,7 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
         String token = tokenService.getToken(request);
         if (!ObjectUtils.isEmpty(token)) {
             LoginUser loginUser = tokenService.getLoginUser(token);
-            log.info("接口:{},被请求", request.getRequestURI());
+            log.info("接口 : {}-{},被请求", request.getMethod(), request.getRequestURI());
             if (!ObjectUtils.isEmpty(loginUser) && ObjectUtils.isEmpty(SecurityUtils.getAuthentication())) {
                 tokenService.verifyToken(loginUser);
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities());

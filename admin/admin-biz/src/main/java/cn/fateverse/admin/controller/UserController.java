@@ -259,6 +259,7 @@ public class UserController {
 
     @ApiOperation("删除用户")
     @DeleteMapping("/{userId}")
+    @PreAuthorize("@ss.hasPermission('admin:user:del')")
     @Log(title = "删除用户", businessType = BusinessType.DELETE)
     public Result<Void> del(@PathVariable Long userId) {
         checkUserId(userId);

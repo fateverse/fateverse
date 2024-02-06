@@ -1,4 +1,4 @@
-package cn.fateverse.common.security.service;
+package cn.fateverse.common.security.configure;
 
 import cn.fateverse.common.security.annotation.MappingSwitch;
 import cn.fateverse.common.security.entity.MappingSwitchInfo;
@@ -10,7 +10,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.env.Environment;
+import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +34,7 @@ import java.util.stream.Collectors;
  * @date 2024/1/15  17:20
  */
 @Slf4j
-public class MappingSwitchService implements InitializingBean, ApplicationContextAware {
+public class MappingSwitchConfiguration implements InitializingBean, ApplicationContextAware {
 
     private ApplicationContext applicationContext;
 
@@ -78,6 +80,7 @@ public class MappingSwitchService implements InitializingBean, ApplicationContex
                     String key = MappingSwitchInfo.getKey(applicationName, handlerMethod, Boolean.TRUE);
                     //初始化
                     initRedisCache(key, mappingSwitchInfo);
+                    mappingSwitchInfo.setType(MappingSwitchInfo.MappingSwitchType.METHOD);
                     //添加到临时缓存中
                     mappingSwitchInfoMap.put(key, mappingSwitchInfo);
                 }
@@ -103,12 +106,24 @@ public class MappingSwitchService implements InitializingBean, ApplicationContex
                         }
                         //初始化对象
                         initRedisCache(key, mappingSwitchInfo);
+                        mappingSwitchInfo.setType(MappingSwitchInfo.MappingSwitchType.CLASS);
                         //将对象添加到临时缓存
                         mappingSwitchInfoMap.put(key, mappingSwitchInfo);
                     }
                 }
             });
             if (!mappingSwitchInfoMap.isEmpty()) {
+                Set<String> keys = new HashSet<>();
+                try (Cursor<String> cursor = redisTemplate.scan(ScanOptions.scanOptions()
+                        .match(MappingSwitchInfo.MappingSwitchConstant.MAPPING_SWITCH + applicationName + "*")
+                        .build())) {
+                    while (cursor.hasNext()) {
+                        keys.add(cursor.next());
+                    }
+                }
+                //先删除当前应用名称下的数据
+                redisTemplate.delete(keys);
+                //重新新增
                 redisTemplate.opsForValue().multiSet(mappingSwitchInfoMap);
             }
         });
@@ -127,6 +142,7 @@ public class MappingSwitchService implements InitializingBean, ApplicationContex
         if (cacheInfo != null && !cacheInfo.getState()) {
             info.setState(Boolean.FALSE);
         }
+        info.setKey(key);
     }
 
 

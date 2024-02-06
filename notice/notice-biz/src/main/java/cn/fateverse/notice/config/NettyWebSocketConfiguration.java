@@ -1,6 +1,6 @@
-package cn.fateverse.common.websocket.config;
+package cn.fateverse.notice.config;
 
-import cn.fateverse.common.websocket.NettyApplication;
+import cn.fateverse.notice.netty.NettyApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

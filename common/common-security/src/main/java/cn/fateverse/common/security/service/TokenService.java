@@ -12,6 +12,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.annotation.Resource;
@@ -27,23 +29,23 @@ import java.util.concurrent.TimeUnit;
  * @date 2022/10/27
  */
 @Slf4j
+@RefreshScope
+@ConfigurationProperties(prefix = "token")
 public class TokenService {
+
     /**
      * 令牌自定义标识
      */
-    @Value("${token.header}")
     private String header;
 
     /**
      * 令牌秘钥
      */
-    @Value("${token.secret}")
     private String secret;
 
     /**
      * 令牌有效期（默认30分钟）
      */
-    @Value("${token.expireTime}")
     private long expireTime;
 
     protected static final long MILLIS_SECOND = 1000;
@@ -88,7 +90,12 @@ public class TokenService {
         return null;
     }
 
-
+    /**
+     * 获取用户uuid
+     *
+     * @param uuid uuid
+     * @return 用户信息
+     */
     public LoginUser getLoginUserUUid(String uuid) {
         String userKey = getTokenKey(uuid);
         return redisTemplate.opsForValue().get(userKey);
@@ -122,7 +129,7 @@ public class TokenService {
      */
     public String createToken(LoginUser loginUser) {
         refreshToken(loginUser);
-        Map<String, Object> claims = new HashMap<>(0);
+        Map<String, Object> claims = new HashMap<>(1);
         claims.put(Constants.LOGIN_USER_KEY, loginUser.getUuid());
         return createToken(claims);
     }
@@ -131,8 +138,7 @@ public class TokenService {
     /**
      * 验证令牌有效期，相差不足20分钟，自动刷新缓存
      *
-     * @param loginUser
-     * @return 令牌
+     * @param loginUser 用户信息
      */
     public void verifyToken(LoginUser loginUser) {
         long expireTime = loginUser.getExpireTime();
@@ -152,7 +158,7 @@ public class TokenService {
         loginUser.setExpireTime(loginUser.getLoginTime() + expireTime * MILLIS_MINUTE);
         // 根据uuid将loginUser缓存
         String userKey = getTokenKey(loginUser.getUuid());
-        redisTemplate.opsForValue().set(userKey,loginUser,expireTime,TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(userKey, loginUser, expireTime, TimeUnit.MINUTES);
     }
 
 
@@ -186,25 +192,12 @@ public class TokenService {
         }
     }
 
-    /**
-     * 从令牌中获取用户名
-     *
-     * @param token 令牌
-     * @return 用户名
-     */
-    public String getUsernameFromToken(String token) {
-        Claims claims = parseToken(token);
-        if (null == claims) {
-            return null;
-        }
-        return claims.getSubject();
-    }
 
     /**
      * 获取请求token
      *
-     * @param request
-     * @return token
+     * @param request 请求对象
+     * @return token 令牌信息
      */
     public String getToken(HttpServletRequest request) {
         String token = request.getHeader(header);
@@ -220,7 +213,7 @@ public class TokenService {
     /**
      * 获取token
      *
-     * @return
+     * @return 令牌信息
      */
     public String getToken() {
         return getToken(getRequest());
@@ -229,7 +222,7 @@ public class TokenService {
     /**
      * 获取request请求体
      *
-     * @return
+     * @return 请求体
      */
     public HttpServletRequest getRequest() {
         return HttpServletUtils.getRequest();
@@ -238,7 +231,7 @@ public class TokenService {
     /**
      * token在获取header中的名称
      *
-     * @return
+     * @return 获取header的名称
      */
     public String getHeader() {
         return header;
@@ -247,10 +240,23 @@ public class TokenService {
     /**
      * 拼接用户信息在redis中的key
      *
-     * @param uuid
-     * @return
+     * @param uuid uuid
+     * @return 获取到令牌在redis中的key
      */
     private String getTokenKey(String uuid) {
         return CacheConstants.LOGIN_TOKEN_KEY + uuid;
+    }
+
+
+    public void setHeader(String header) {
+        this.header = header;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
+    }
+
+    public void setExpireTime(long expireTime) {
+        this.expireTime = expireTime;
     }
 }

@@ -27,7 +27,6 @@
         <module>common-file</module>
         <module>common-dubbo</module>
         <module>common-email</module>
-        <module>common-websocket</module>
         <module>common-mybatis-puls</module>
         <module>common-decrypt</module>
         <module>common-seata</module>

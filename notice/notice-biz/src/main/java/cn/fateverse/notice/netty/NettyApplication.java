@@ -1,7 +1,7 @@
-package cn.fateverse.common.websocket;
+package cn.fateverse.notice.netty;
 
-import cn.fateverse.common.websocket.config.NoticeProperties;
-import cn.fateverse.common.websocket.handler.WebSocketServerHandler;
+import cn.fateverse.notice.config.NoticeProperties;
+import cn.fateverse.notice.handler.NoticeSocketServerHandler;
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.cloud.nacos.NacosServiceManager;
 import com.alibaba.cloud.nacos.registry.NacosRegistration;
@@ -37,7 +37,7 @@ import org.springframework.scheduling.annotation.Async;
 public class NettyApplication implements ApplicationRunner {
 
     @Autowired
-    private WebSocketServerHandler webSocketServerHandler;
+    private NoticeSocketServerHandler noticeSocketServerHandler;
     @Autowired
     private NacosDiscoveryProperties nacosDiscoveryProperties;
     @Autowired
@@ -71,7 +71,7 @@ public class NettyApplication implements ApplicationRunner {
                             pipeline.addLast(new ChunkedWriteHandler());
                             pipeline.addLast("WebSocket 数据压缩扩展", new WebSocketServerCompressionHandler());
                             pipeline.addLast("WebSocket 握手 控制帧处理", new WebSocketServerProtocolHandler(properties.getPath()));
-                            pipeline.addLast(webSocketServerHandler);
+                            pipeline.addLast(noticeSocketServerHandler);
                         }
                     });
             ChannelFuture channelFuture = serverBootstrap.bind(properties.getPort()).sync();

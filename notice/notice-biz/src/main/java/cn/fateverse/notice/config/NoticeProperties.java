@@ -1,4 +1,4 @@
-package cn.fateverse.common.websocket.config;
+package cn.fateverse.notice.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.env.Environment;

@@ -10,7 +10,7 @@ import cn.fateverse.common.core.result.page.TableDataInfo;
 import cn.fateverse.common.core.utils.ObjectUtils;
 import cn.fateverse.common.redis.constant.RedisConstant;
 import cn.fateverse.common.mybatis.utils.PageUtils;
-import cn.fateverse.common.websocket.config.NoticeProperties;
+import cn.fateverse.notice.config.NoticeProperties;
 import cn.fateverse.notice.constant.NoticeConstant;
 import cn.fateverse.notice.dto.NoticeDto;
 import cn.fateverse.notice.entity.Notice;

@@ -2,6 +2,7 @@ package cn.fateverse.common.swagger.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 /**
  * swagger
@@ -9,6 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author Clay
  * @date 2022/10/31
  */
+@RefreshScope
 @ConfigurationProperties(prefix = "swagger")
 public class SwaggerProperties {
 

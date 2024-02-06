@@ -28,8 +28,6 @@ public class TaskExecutePoolConfiguration implements InitializingBean {
     @Resource
     private TaskThreadPoolProperties properties;
 
-//    private ThreadPoolExecutor executor;
-
     private ThreadPoolTaskExecutor executor;
 
     @Resource
@@ -55,12 +53,6 @@ public class TaskExecutePoolConfiguration implements InitializingBean {
         executor.setThreadFactory(new ThreadFactoryBuilder().setNameFormat("fateverse_%d").build());
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         executor.initialize();
-//        executor = new ThreadPoolExecutor(properties.getCorePoolSize(),
-//                properties.getMaxPoolSize(),
-//                properties.getKeepAliveSeconds(),
-//                TimeUnit.SECONDS, new LinkedBlockingDeque<>(properties.getQueueCapacity()),
-//                new ThreadFactoryBuilder().setNameFormat("fateverse_%d").build(),
-//                new ThreadPoolExecutor.CallerRunsPolicy());
         Environment environment = nacosConfigProperties.getEnvironment();
         String active = environment.getProperty("spring.profiles.active");
         String applicationName = environment.getProperty("spring.application.name");

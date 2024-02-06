@@ -19,6 +19,7 @@ public class PermissionService {
     @Resource
     private DemoSwitchProperties properties;
 
+
     /**
      * 所有权限标识
      */
@@ -43,7 +44,6 @@ public class PermissionService {
     }
 
 
-
     private void checkDemoSwitch(String permission) {
         if (!properties.getEnable()) {
             return;
@@ -55,5 +55,6 @@ public class PermissionService {
             throw new RuntimeException("演示模式,不允许操作!");
         }
     }
+
 
 }

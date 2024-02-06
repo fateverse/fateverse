@@ -4,13 +4,14 @@
  Source Server         : fateverse-demo
  Source Server Type    : MySQL
  Source Server Version : 80036
- Source Schema         : fateverse_admin
+ Source Host           : 10.7.127.184:3307
+ Source Schema         : fateverse_demo_admin
 
  Target Server Type    : MySQL
  Target Server Version : 80036
  File Encoding         : 65001
 
- Date: 01/02/2024 16:12:58
+ Date: 01/02/2024 16:29:48
 */
 
 SET NAMES utf8mb4;
@@ -285,7 +286,7 @@ INSERT INTO `sys_menu` VALUES (103, '部门管理', 1, 'M', 4, 'dept', NULL, 'sy
 INSERT INTO `sys_menu` VALUES (104, '岗位管理', 1, 'M', 6, 'post', NULL, 'system/post/index', '0', 0, 0, 1, '0', '1', 'system:post:list', 'Management', '0', '2018-03-16 11:33:00', 'admin', '2023-06-02 15:33:15', '岗位管理菜单');
 INSERT INTO `sys_menu` VALUES (105, '字典管理', 3, 'M', 7, 'dict', NULL, 'tool/dict/index', '0', 0, 0, 1, '0', '1', 'tool:dict:list', 'zidianpeizhi', '0', '2018-03-16 11:33:00', 'admin', '2023-07-19 17:18:28', '字典管理菜单');
 INSERT INTO `sys_menu` VALUES (106, '参数设置', 3, 'M', 8, 'config', NULL, 'system/config/index', '0', 0, 0, 1, '0', '1', 'system:config:list', 'canshu', '0', '2018-03-16 11:33:00', 'admin', '2023-07-19 17:24:39', '参数设置菜单');
-INSERT INTO `sys_menu` VALUES (107, '公告管理', 1, 'D', 9, 'notice', NULL, 'system/notice/index', '0', 0, 0, 1, '0', '1', 'system:notice:list', 'Message', '0', '2018-03-16 11:33:00', 'admin', '2023-08-01 13:27:11', '通知公告菜单');
+INSERT INTO `sys_menu` VALUES (107, '公告管理', 0, 'D', 9, 'notice', NULL, 'system/notice/index', '0', 0, 0, 1, '0', '1', 'system:notice:list', 'Message', '0', '2018-03-16 11:33:00', 'admin', '2024-02-01 16:28:43', '通知公告菜单');
 INSERT INTO `sys_menu` VALUES (108, '日志管理', 2, 'D', 10, 'log', NULL, 'system/log/index', '0', 0, 1, 1, '0', '1', '', 'Tickets', '0', '2018-03-16 11:33:00', 'admin', '2023-05-29 00:35:49', '日志管理菜单');
 INSERT INTO `sys_menu` VALUES (109, '在线用户', 2, 'M', 1, 'online', NULL, 'monitor/online/index', '0', 0, 0, 1, '0', '1', 'monitor:online:list', 'zaixianyonghu', '0', '2018-03-16 11:33:00', 'admin', '2023-07-19 17:09:00', '在线用户菜单');
 INSERT INTO `sys_menu` VALUES (114, '代码生成', 1151, 'M', 2, 'gen', NULL, 'rapid/gen/index', '0', 0, 0, 1, '0', '1', 'rapid:gen:list', 'daimashengcheng', '0', '2018-03-16 11:33:00', 'admin', '2023-07-19 17:23:31', '代码生成菜单');

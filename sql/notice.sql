@@ -4,7 +4,8 @@
  Source Server         : fateverse-demo
  Source Server Type    : MySQL
  Source Server Version : 80036
- Source Schema         : fateverse_notice
+ Source Host           : 10.7.127.184:3307
+ Source Schema         : fateverse_demo_notice
 
  Target Server Type    : MySQL
  Target Server Version : 80036
