@@ -60,6 +60,10 @@ FateVerse
 
 在 SpringBoot **FTP**、**minio**、**FastDFS**、**阿里云OSS**
 
+### 系统架构图
+
+![architecture_diagram.png](architecture_diagram.png)
+
 ### 压力测试
 
 - 4*8 单节点测试结果
