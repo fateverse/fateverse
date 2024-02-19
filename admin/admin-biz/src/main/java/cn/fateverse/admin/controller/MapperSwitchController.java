@@ -6,6 +6,7 @@ import cn.fateverse.admin.query.MappingSwitchQuery;
 import cn.fateverse.admin.service.MappingSwitchService;
 import cn.fateverse.common.core.result.Result;
 import cn.fateverse.common.core.result.page.TableDataInfo;
+import cn.fateverse.common.decrypt.annotation.Encrypt;
 import cn.fateverse.common.log.annotation.Log;
 import cn.fateverse.common.log.enums.BusinessType;
 import io.swagger.annotations.Api;
@@ -33,6 +34,7 @@ public class MapperSwitchController {
 
     @ApiOperation("获取接口开关列表")
     @GetMapping
+    @Encrypt
     @PreAuthorize("@ss.hasPermission('mapping:switch:list')")
     public Result<TableDataInfo<MappingSwitchVo>> list(MappingSwitchQuery query) {
         TableDataInfo<MappingSwitchVo> search = mappingSwitchService.search(query);
@@ -41,6 +43,7 @@ public class MapperSwitchController {
 
     @ApiOperation("修改开关状态")
     @PutMapping
+    @Encrypt
     @PreAuthorize("@ss.hasPermission('mapping:switch:update')")
     @Log(title = "修改开关状态", businessType = BusinessType.UPDATE)
     public Result<Void> update(@RequestBody @Validated MappingSwitchDto dto) {

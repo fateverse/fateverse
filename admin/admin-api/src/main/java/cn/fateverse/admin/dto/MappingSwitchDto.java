@@ -1,5 +1,6 @@
 package cn.fateverse.admin.dto;
 
+import cn.fateverse.common.decrypt.annotation.EncryptField;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -15,6 +16,7 @@ public class MappingSwitchDto {
      * key作为唯一编号
      */
     @NotBlank(message = "唯一编号不能为空")
+    @EncryptField
     private String key;
 
     /**

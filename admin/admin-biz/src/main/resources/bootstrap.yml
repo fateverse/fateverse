@@ -14,7 +14,7 @@ spring:
     nacos:
       discovery:
         # 服务注册地址
-        server-addr: localhost:8848
+        server-addr: 192.168.101.108:8848
         username: nacos
         password: nacos
         namespace: ${spring.profiles.active}
@@ -26,6 +26,9 @@ spring:
         shared-configs:
           - data-id: application-${spring.profiles.active}.yaml
             refresh: true
+
+encrypt:
+  secretKey: 1234567890abcdef
 
 dubbo:
   application:
@@ -40,3 +43,33 @@ dubbo:
     parameters:
       namespace: dubbo-${spring.profiles.active}
 
+
+seata:
+  application-id: ${spring.application.name}
+  tx-service-group: default_tx_group
+  service:
+    grouplist:
+      seata-server: 10.7.127.185:8091
+  registry:
+    type: nacos
+    nacos:
+      server-addr: ${spring.cloud.nacos.discovery.server-addr}
+      username: ${spring.cloud.nacos.discovery.username}
+      password: ${spring.cloud.nacos.discovery.password}
+      group: SEATA_GROUP
+      namespace: dev
+  config:
+    type: nacos
+    nacos:
+      server-addr: ${spring.cloud.nacos.discovery.server-addr}
+      username: ${spring.cloud.nacos.discovery.username}
+      password: ${spring.cloud.nacos.discovery.password}
+      group: SEATA_GROUP
+      namespace: seata-config
+  client:
+    undo:
+      log-serialization: kryo
+      data-validation: true
+    rm:
+      report-retry-count: 5
+      table-meta-check-enable: false

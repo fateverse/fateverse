@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
@@ -41,7 +42,7 @@ public class MenuDto implements Serializable {
      * 显示顺序
      */
     @ApiModelProperty("显示顺序")
-    @NotBlank(message = "显示顺序不能为空")
+    @NotNull(message = "显示顺序不能为空")
     private Integer orderNum;
 
     /**
