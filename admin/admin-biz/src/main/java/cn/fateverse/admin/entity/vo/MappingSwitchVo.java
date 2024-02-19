@@ -1,5 +1,6 @@
 package cn.fateverse.admin.entity.vo;
 
+import cn.fateverse.common.decrypt.annotation.EncryptField;
 import cn.fateverse.common.security.entity.MappingSwitchInfo;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class MappingSwitchVo {
     /**
      * key作为唯一编号
      */
+    @EncryptField
     private String key;
 
     /**
