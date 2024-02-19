@@ -250,13 +250,14 @@ public class TableServiceImpl implements TableService {
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void syncTable(Long tableId) {
         TableDto tableDto = tableMapper.selectTableDtoByTableId(tableId);
-        if (null == tableDto){
+        if (null == tableDto) {
             throw new CustomException("操作失败!");
         }
         List<TableDto> tableDtos = dynamicTableMetadataService.searchFullTableByTableNames(Collections.singletonList(tableDto.getTableName()), tableDto.getDataSourceId());
-        if (null == tableDtos || tableDtos.size() != 1){
+        if (null == tableDtos || tableDtos.size() != 1) {
             throw new CustomException("同步数据失败，原表结构不存在");
         }
         List<TableColumn> dataBaseColumns = tableDto.getColumns();
@@ -264,12 +265,12 @@ public class TableServiceImpl implements TableService {
             throw new CustomException("列信息查询为空!");
         }
         TableDto table = tableDtos.get(0);
-        if (ObjectUtils.isEmpty(tableDto.getTableComment())){
+        if (ObjectUtils.isEmpty(tableDto.getTableComment())) {
             tableDto.setTableComment(table.getTableComment());
             tableMapper.updateTable(tableDto);
         }
         List<TableColumn> sourceColumn = table.getColumns();
-        if (sourceColumn == null || sourceColumn.isEmpty()){
+        if (sourceColumn == null || sourceColumn.isEmpty()) {
             tableColumnMapper.deleteByTableId(tableId);
             return;
         }
@@ -315,6 +316,7 @@ public class TableServiceImpl implements TableService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void remove(Long tableId) {
         tableMapper.deleteTableById(tableId);
         tableColumnMapper.deleteByTableId(tableId);
@@ -322,6 +324,7 @@ public class TableServiceImpl implements TableService {
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void removeBatch(List<Long> tableIds) {
 
 

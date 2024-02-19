@@ -38,7 +38,7 @@ public class Menu extends BaseEntity {
     /**
      * 显示顺序
      */
-    private String orderNum;
+    private Integer orderNum;
 
     /**
      * 路由地址

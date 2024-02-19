@@ -42,7 +42,7 @@ public class MenuDto implements Serializable {
      */
     @ApiModelProperty("显示顺序")
     @NotBlank(message = "显示顺序不能为空")
-    private String orderNum;
+    private Integer orderNum;
 
     /**
      * 路由地址

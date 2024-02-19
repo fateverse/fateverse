@@ -1,5 +1,6 @@
 package cn.fateverse.code.service.impl;
 
+import cn.fateverse.code.mapper.TableMapper;
 import cn.hutool.core.util.StrUtil;
 import cn.fateverse.code.entity.CodeDataSource;
 import cn.fateverse.code.entity.dto.DataSourceDto;
@@ -16,6 +17,7 @@ import cn.fateverse.common.redis.annotation.RedisCache;
 import cn.fateverse.common.redis.enums.RedisCacheType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,12 +30,16 @@ import java.util.stream.Collectors;
 @Service
 public class DataSourceServiceImpl implements DataSourceService {
 
+    private final TableMapper tableMapper;
+
     private final DataSourceMapper dataSourceMapper;
 
     private final DynamicDataSourceService dynamicDataSourceService;
 
-    public DataSourceServiceImpl(DataSourceMapper dataSourceMapper,
+    public DataSourceServiceImpl(TableMapper tableMapper,
+                                 DataSourceMapper dataSourceMapper,
                                  DynamicDataSourceService dynamicDataSourceService) {
+        this.tableMapper = tableMapper;
         this.dataSourceMapper = dataSourceMapper;
         this.dynamicDataSourceService = dynamicDataSourceService;
     }
@@ -54,7 +60,7 @@ public class DataSourceServiceImpl implements DataSourceService {
     }
 
     @Override
-    @RedisCache(prefix = "data-source",type = RedisCacheType.GET_BY_PRIMARY_KEY,primaryKey = "#{#id}")
+    @RedisCache(prefix = "data-source", type = RedisCacheType.GET_BY_PRIMARY_KEY, primaryKey = "#{#id}")
     public CodeDataSource searchById(Long id) {
         return dataSourceMapper.selectById(id);
     }
@@ -72,6 +78,7 @@ public class DataSourceServiceImpl implements DataSourceService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     @RedisCache(prefix = "data-source", type = RedisCacheType.INSERT)
     public void save(DataSourceDto dataSource) {
         CodeDataSource save = dataSource.toCodeDataSource();
@@ -81,10 +88,11 @@ public class DataSourceServiceImpl implements DataSourceService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     @RedisCache(prefix = "data-source", type = RedisCacheType.UPDATE, primaryKey = "#{#dataSource.dsId}")
     public void edit(DataSourceDto dataSource) {
         CodeDataSource edit = dataSource.toCodeDataSource();
-        if (StrUtil.isBlank(dataSource.getPassword())){
+        if (StrUtil.isBlank(dataSource.getPassword())) {
             CodeDataSource codeDataSource = dataSourceMapper.selectById(dataSource.getDsId());
             edit.setPassword(codeDataSource.getPassword());
         }
@@ -93,17 +101,23 @@ public class DataSourceServiceImpl implements DataSourceService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     @RedisCache(prefix = "data-source", type = RedisCacheType.DELETE, primaryKey = "#{#id}")
     public void removeById(Long id) {
+        Long count = tableMapper.selectCheckTableByDataSourceId(id);
+        if (count == null || count > 0) {
+            throw new CustomException("当前数据源下存在表格信息,不允许删除!");
+        }
         dataSourceMapper.delete(id);
     }
 
     /**
      * 检查数据源的连接性
+     *
      * @param dataSource 数据源
      */
-    private void checkConnect(CodeDataSource dataSource){
-        if (!dynamicDataSourceService.checkDataSource(dataSource)){
+    private void checkConnect(CodeDataSource dataSource) {
+        if (!dynamicDataSourceService.checkDataSource(dataSource)) {
             throw new CustomException("数据源无法连接,请检查配置信息!");
         }
     }

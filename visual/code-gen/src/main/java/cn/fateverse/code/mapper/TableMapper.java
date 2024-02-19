@@ -82,4 +82,10 @@ public interface TableMapper {
      */
     int deleteTableByIds(Long[] ids);
 
+    /**
+     * 根据数据源id检查是否存在表格信息
+     * @param id 数据源id
+     * @return 表格数据量
+     */
+    Long selectCheckTableByDataSourceId(Long id);
 }

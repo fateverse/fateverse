@@ -37,7 +37,7 @@ public class MenuVo implements Serializable {
      * 显示顺序
      */
     @ApiModelProperty("显示顺序")
-    private String orderNum;
+    private Integer orderNum;
 
     /**
      * 路由地址

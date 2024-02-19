@@ -59,7 +59,7 @@ public class MenuTree {
             if (null == menu.getOrderNum()) {
                 return 0;
             } else {
-                return Convert.toInt(menu.getOrderNum());
+                return menu.getOrderNum();
             }
         })).collect(Collectors.toList());
         List<RouterVo> result = new ArrayList<>();
@@ -67,7 +67,7 @@ public class MenuTree {
             if (MenuEnum.BUTTON.getCode().equals(menu.getMenuType())) {
                 continue;
             }
-            MetaVo meta = new MetaVo(menu.getMenuName(), menu.getIcon(), menu.getIsCache(), menu.getNoRedirect(), menu.getBreadcrumb(),menu.getIsFrame());
+            MetaVo meta = new MetaVo(menu.getMenuName(), menu.getIcon(), menu.getIsCache(), menu.getNoRedirect(), menu.getBreadcrumb(), menu.getIsFrame());
             RouterVo router = RouterVo.builder()
                     .name(getRouteName(menu))
                     .path(getRouterPath(menu, parent))

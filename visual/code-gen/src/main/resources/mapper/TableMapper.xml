@@ -261,6 +261,9 @@
         where data_source_id = #{dataSourceId}
     </select>
 
+    <select id="selectCheckTableByDataSourceId" resultType="java.lang.Long">
+        select count(*) from gen_table where data_source_id = #{dataSourceId} limit 1
+    </select>
 
     <insert id="insertTable" useGeneratedKeys="true" keyProperty="tableId">
         insert into gen_table
