@@ -4,9 +4,11 @@ import cn.fateverse.admin.dto.MappingSwitchDto;
 import cn.fateverse.admin.entity.vo.MappingSwitchVo;
 import cn.fateverse.admin.query.MappingSwitchQuery;
 import cn.fateverse.admin.service.MappingSwitchService;
+import cn.fateverse.common.core.constant.UserConstants;
 import cn.fateverse.common.core.entity.PageInfo;
 import cn.fateverse.common.core.exception.CustomException;
 import cn.fateverse.common.core.result.page.TableDataInfo;
+import cn.fateverse.common.core.utils.ReflectUserUtils;
 import cn.fateverse.common.core.utils.TableSupport;
 import cn.fateverse.common.mybatis.utils.PageUtils;
 import cn.fateverse.common.security.entity.MappingSwitchInfo;
@@ -15,14 +17,12 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -99,6 +99,17 @@ public class MappingSwitchServiceImpl implements MappingSwitchService {
         }
         if (mappingSwitchInfo.getState() != dto.getState()) {
             mappingSwitchInfo.setState(dto.getState());
+            try {
+                Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                if (null != principal && !UserConstants.ANONYMOUS_USER.equals(principal)) {
+                    String userName = ReflectUserUtils.getUsername(principal);
+                    mappingSwitchInfo.setOperName(userName);
+                }
+            } catch (Exception e) {
+                log.info("当前接口不是由登录后的用户触发的!");
+            }
+            mappingSwitchInfo.setOperTime(new Date());
+
             redisTemplate.opsForValue().set(mappingSwitchInfo.getKey(), mappingSwitchInfo);
         }
     }

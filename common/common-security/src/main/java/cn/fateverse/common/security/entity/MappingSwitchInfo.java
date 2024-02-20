@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.web.method.HandlerMethod;
 
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.Set;
 import java.util.StringJoiner;
 
@@ -60,6 +61,17 @@ public class MappingSwitchInfo {
      * 当前方法的状态,true为正常放行,false为关闭
      */
     private Boolean state;
+
+    /**
+     * 变更时间
+     */
+    private Date operTime;
+    /**
+     * 操作人员
+     */
+    private String operName;
+
+
 
     public static class MappingSwitchConstant {
         /**
