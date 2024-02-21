@@ -1,8 +1,10 @@
 package cn.fateverse.admin.service;
 
+import cn.fateverse.admin.dto.PostDto;
 import cn.fateverse.admin.query.PostQuery;
-import cn.fateverse.admin.entity.Post;
+import cn.fateverse.admin.vo.PostVo;
 import cn.fateverse.common.core.entity.Option;
+import cn.fateverse.common.core.result.page.TableDataInfo;
 
 import java.util.List;
 
@@ -19,7 +21,7 @@ public interface PostService {
      * @param query
      * @return
      */
-    List<Post> searchList(PostQuery query);
+    TableDataInfo<PostVo> searchList(PostQuery query);
 
     /**
      * 获取岗位的选择option选项
@@ -34,23 +36,7 @@ public interface PostService {
      * @param id
      * @return
      */
-    Post searchById(Long id);
-
-    /**
-     * 校验岗位代码是否唯一
-     *
-     * @param post
-     * @return
-     */
-    boolean checkCodeUnique(Post post);
-
-    /**
-     * 校验岗位名称是否唯一
-     *
-     * @param post
-     * @return
-     */
-    boolean checkNameUnique(Post post);
+    PostVo searchById(Long id);
 
     /**
      * 当前岗位下时候还有用户
@@ -62,24 +48,22 @@ public interface PostService {
     /**
      * 保存岗位信息
      *
-     * @param post
-     * @return
+     * @param postDto@return
      */
-    int save(Post post);
+    int save(PostDto postDto);
 
     /**
      * 编辑岗位信息
      *
-     * @param post
-     * @return
+     * @param postDto@return
      */
-    int edit(Post post);
+    int edit(PostDto postDto);
 
     /**
      * 删除岗位信息
      *
-     * @param id
+     * @param postId
      * @return
      */
-    int removeById(Long id);
+    int removeById(Long postId);
 }

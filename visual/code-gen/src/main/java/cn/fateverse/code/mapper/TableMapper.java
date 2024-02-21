@@ -80,7 +80,7 @@ public interface TableMapper {
      * @param ids
      * @return
      */
-    int deleteTableByIds(Long[] ids);
+    int deleteTableByIds(List<Long> ids);
 
     /**
      * 根据数据源id检查是否存在表格信息

@@ -10,6 +10,7 @@ import cn.fateverse.common.core.exception.CustomException;
 import cn.fateverse.common.core.result.page.TableDataInfo;
 import cn.fateverse.common.core.utils.ReflectUserUtils;
 import cn.fateverse.common.core.utils.TableSupport;
+import cn.fateverse.common.log.enums.OperateType;
 import cn.fateverse.common.mybatis.utils.PageUtils;
 import cn.fateverse.common.security.entity.MappingSwitchInfo;
 import lombok.extern.slf4j.Slf4j;

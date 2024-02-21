@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "encrypt")
 public class EncryptProperties {
 
-    private String secretKey;
+    private String secretKey = "1234567890abcdef";
 
     public String getSecretKey() {
         return secretKey;

@@ -46,6 +46,10 @@ public class MenuSimpVo {
     @ApiModelProperty("显示顺序")
     private Integer orderNum;
 
+
+    @ApiModelProperty("显示顺序")
+    private String menuType;
+
     /**
      * 权限字符串
      */

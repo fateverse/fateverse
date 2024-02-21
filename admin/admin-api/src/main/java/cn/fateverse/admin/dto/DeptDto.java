@@ -41,8 +41,8 @@ public class DeptDto {
     /**
      * 显示顺序
      */
-    @NotBlank(message = "显示顺序不能为空!")
-    private String orderNum;
+    @NotNull(message = "显示顺序不能为空!")
+    private Integer orderNum;
 
     /**
      * 负责人

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 
 
@@ -19,7 +20,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DictDataVo {
+public class DictDataVo implements Serializable {
     /**
      * 字典编码
      */
@@ -28,7 +29,7 @@ public class DictDataVo {
      * 字典排序
      */
     @ApiModelProperty("字典排序")
-    private String dictSort;
+    private Integer dictSort;
     /**
      * 字典标签
      */

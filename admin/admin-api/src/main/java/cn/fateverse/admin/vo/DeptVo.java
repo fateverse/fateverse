@@ -37,7 +37,7 @@ public class DeptVo implements Serializable {
     /**
      * 显示顺序
      */
-    private String orderNum;
+    private Integer orderNum;
 
     /**
      * 负责人

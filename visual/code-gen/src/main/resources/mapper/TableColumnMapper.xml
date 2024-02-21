@@ -296,7 +296,7 @@
 
     <delete id="deleteByTableIds" parameterType="Long">
         delete from gen_table_column where table_id in
-        <foreach collection="array" item="tableId" open="(" separator="," close=")">
+        <foreach collection="list" item="tableId" open="(" separator="," close=")">
             #{tableId}
         </foreach>
     </delete>

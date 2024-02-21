@@ -51,7 +51,7 @@ public class TableController {
         return Result.ok(dataInfo);
     }
 
-    @ApiOperation("获取list")
+    @ApiOperation("导出")
     @PreAuthorize("@ss.hasPermission('code:table:export')")
     @GetMapping("/export")
     public void export(TableQuery query) {

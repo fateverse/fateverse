@@ -22,7 +22,7 @@ public class DictDataDto {
      */
     @ApiModelProperty("字典排序")
     @NotNull(message = "状态不能为空!")
-    private String dictSort;
+    private Integer dictSort;
     /**
      * 字典标签
      */

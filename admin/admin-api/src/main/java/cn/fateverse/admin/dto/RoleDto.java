@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 /**
@@ -44,8 +45,8 @@ public class RoleDto {
      * 角色排序
      */
     @ApiModelProperty("角色排序")
-    @NotBlank(message = "角色排序不能为空!")
-    private String roleSort;
+    @NotNull(message = "角色排序不能为空!")
+    private Integer roleSort;
 
     /**
      * 数据范围（1：所有数据权限；2：自定义数据权限；3：本部门数据权限；4：本部门及以下数据权限）

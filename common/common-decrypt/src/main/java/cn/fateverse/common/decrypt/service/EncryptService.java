@@ -1,35 +1,24 @@
 package cn.fateverse.common.decrypt.service;
 
-import cn.fateverse.common.core.exception.CustomException;
-import cn.fateverse.common.decrypt.config.EncryptProperties;
-import cn.fateverse.common.decrypt.utils.SM4Util;
-import org.springframework.beans.factory.annotation.Autowired;
-
 /**
  * @author Clay
- * @date 2023-08-07
+ * @date 2024/2/19 16:19
  */
+public interface EncryptService {
 
-public class EncryptService {
+    /**
+     * 加密方法
+     *
+     * @param plainText 需要加密的文档
+     * @return 加密之后的数据
+     */
+    String encrypt(String plainText);
 
-    @Autowired
-    private EncryptProperties properties;
-
-    public String encrypt(String plainText) {
-        try {
-            return SM4Util.encrypt(plainText, properties.getSecretKey());
-        } catch (Exception e) {
-            throw new CustomException("加密失败", e);
-        }
-    }
-
-    public String decrypt(String cipherText) {
-        try {
-            return SM4Util.decrypt(cipherText, properties.getSecretKey());
-        } catch (Exception e) {
-            throw new CustomException("解密失败", e);
-        }
-    }
-
-
+    /**
+     * 解密方法
+     *
+     * @param cipherText 需要解密的文档
+     * @return 解密之后的文档
+     */
+    String decrypt(String cipherText);
 }

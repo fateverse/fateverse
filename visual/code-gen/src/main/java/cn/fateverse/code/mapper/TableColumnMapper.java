@@ -59,7 +59,7 @@ public interface TableColumnMapper {
      * @param tableIds
      * @return
      */
-    int deleteByTableIds(Long[] tableIds);
+    int deleteByTableIds(List<Long> tableIds);
 
     /**
      * 删除列信息

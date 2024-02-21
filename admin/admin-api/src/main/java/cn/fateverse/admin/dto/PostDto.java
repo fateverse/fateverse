@@ -2,9 +2,7 @@ package cn.fateverse.admin.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 
@@ -13,8 +11,6 @@ import javax.validation.constraints.NotNull;
  * @date 2022/11/26
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @ApiModel("岗位实体")
 public class PostDto {
 
@@ -40,7 +36,7 @@ public class PostDto {
      */
     @ApiModelProperty("显示顺序")
     @NotNull(message = "显示顺序不能为空!")
-    private String postSort;
+    private Integer postSort;
     /**
      * 状态（1正常 0停用）
      */

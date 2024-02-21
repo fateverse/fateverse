@@ -326,8 +326,8 @@ public class TableServiceImpl implements TableService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void removeBatch(List<Long> tableIds) {
-
-
+        tableMapper.deleteTableByIds(tableIds);
+        tableColumnMapper.deleteByTableIds(tableIds);
     }
 
 

@@ -3,8 +3,8 @@ package cn.fateverse.common.decrypt.aspect;
 import cn.fateverse.common.core.exception.CustomException;
 import cn.fateverse.common.core.result.Result;
 import cn.fateverse.common.decrypt.annotation.EncryptField;
-import cn.fateverse.common.decrypt.config.EncryptProperties;
-import cn.fateverse.common.decrypt.utils.SM4Util;
+import cn.fateverse.common.decrypt.service.EncryptService;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -18,10 +18,12 @@ import java.lang.reflect.Parameter;
 import java.util.Collection;
 import java.util.List;
 
+@Slf4j
 @Aspect
 public class EncryptAspect {
 
     protected static String BASE_PACKAGE;
+
 
     static {
         String typeName = EncryptAspect.class.getTypeName();
@@ -29,8 +31,11 @@ public class EncryptAspect {
         BASE_PACKAGE = typeName.substring(0, typeName.indexOf(".", fastIndex + 1));
     }
 
-    @Resource
-    private EncryptProperties properties;
+    private final EncryptService encryptService;
+
+    public EncryptAspect(EncryptService encryptService) {
+        this.encryptService = encryptService;
+    }
 
 
     @Around("@annotation(cn.fateverse.common.decrypt.annotation.Encrypt)")
@@ -47,20 +52,20 @@ public class EncryptAspect {
             //获取参数注解
             EncryptField encryptField = parameter.getAnnotation(EncryptField.class);
             Object arg = args[i];
-            if (null != encryptField ) {
-                if (arg instanceof String){
-                    String decrypt = SM4Util.decrypt((String) arg, properties.getSecretKey());
+            if (null != encryptField) {
+                if (arg instanceof String) {
+                    String decrypt = encryptService.decrypt((String) arg);
                     args[i] = decrypt;
-                }else if (arg instanceof List){
+                } else if (arg instanceof List) {
                     try {
                         List<String> list = (List<String>) arg;
                         for (int j = 0; j < list.size(); j++) {
                             String ciphertext = list.get(j);
-                            String decrypt = SM4Util.decrypt(ciphertext, properties.getSecretKey());
+                            String decrypt = encryptService.decrypt(ciphertext);
                             list.set(j, decrypt);
                         }
                         args[i] = list;
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         throw new CustomException("接受参数类型错误,请使用String类型的泛型参数");
                     }
                 }
@@ -74,18 +79,28 @@ public class EncryptAspect {
             Result<Object> result = (Result<Object>) proceed;
             Object data = result.getData();
             if (null != data) {
-                encrypt(data);
+                try {
+                    encrypt(data);
+                } catch (Exception e) {
+                    log.error("加密异常", e);
+                    return Result.error("加密异常!");
+                }
             }
             result.setData(data);
-        }else {
-            encrypt(proceed);
+        } else {
+            try {
+                encrypt(proceed);
+            } catch (Exception e) {
+                log.error("加密异常", e);
+                return Result.error("加密异常!");
+            }
         }
         return proceed;
     }
 
 
     private void encrypt(Object data) throws Exception {
-        if (data == null){
+        if (data == null) {
             return;
         }
         Class<?> argClass = data.getClass();
@@ -99,7 +114,7 @@ public class EncryptAspect {
                     continue;
                 }
                 if (null != encryptField && value instanceof String) {
-                    String decrypt = SM4Util.encrypt((String) value, properties.getSecretKey());
+                    String decrypt = encryptService.encrypt((String) value);
                     ReflectionUtils.setField(field, data, decrypt);
                 } else if (field.getType().getName().startsWith(BASE_PACKAGE)) {
                     encrypt(value);
@@ -130,7 +145,7 @@ public class EncryptAspect {
                 continue;
             }
             if (null != encryptField && value instanceof String) {
-                String decrypt = SM4Util.decrypt((String) value, properties.getSecretKey());
+                String decrypt = encryptService.decrypt((String) value);
                 ReflectionUtils.setField(field, arg, decrypt);
             } else if (field.getType().getName().startsWith(BASE_PACKAGE)) {
                 decrypt(value);
