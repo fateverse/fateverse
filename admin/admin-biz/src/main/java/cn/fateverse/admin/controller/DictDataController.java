@@ -59,7 +59,7 @@ public class DictDataController {
 
     @ApiOperation("获取字典数据")
     @GetMapping
-    @PreAuthorize("@ss.hasPermission('admin:dict:list')")
+    @PreAuthorize("@ss.hasPermission('dict:data:list')")
     public Result<TableDataInfo<DictDataVo>> list(DictDataQuery query){
         if (StrUtil.isEmpty(query.getDictType())){
             return Result.error("字典名称不能为空!");
@@ -70,7 +70,7 @@ public class DictDataController {
 
     @ApiOperation("查询字典数据详情")
     @GetMapping("/{dictCode}")
-    @PreAuthorize("@ss.hasPermission('admin:dict:info')")
+    @PreAuthorize("@ss.hasPermission('dict:data:info')")
     public Result<DictDataVo> info(@PathVariable Long dictCode){
         LongUtils.checkId(dictCode);
         DictDataVo dictData = dictDataService.searchByCode(dictCode);
@@ -80,7 +80,7 @@ public class DictDataController {
     @ApiOperation("新增字典数据")
     @PostMapping
     @Log(title = "新增字典类型",businessType = BusinessType.INSERT)
-    @PreAuthorize("@ss.hasPermission('admin:dict:add')")
+    @PreAuthorize("@ss.hasPermission('dict:data:add')")
     public Result<Void> add(@RequestBody @Validated DictDataDto dto){
         dictDataService.save(dto);
         return Result.ok();
@@ -89,7 +89,7 @@ public class DictDataController {
     @ApiOperation("修改字典数据")
     @PutMapping
     @Log(title = "修改字典类型",businessType = BusinessType.UPDATE)
-    @PreAuthorize("@ss.hasPermission('admin:dict:edit')")
+    @PreAuthorize("@ss.hasPermission('dict:data:edit')")
     public Result<Void> edit(@RequestBody @Validated DictDataDto dto){
         LongUtils.checkId(dto.getDictCode());
         dictDataService.edit(dto);
@@ -99,7 +99,7 @@ public class DictDataController {
     @ApiOperation("删除字典数据")
     @DeleteMapping("/{dictCode}")
     @Log(title = "删除字典类型",businessType = BusinessType.DELETE)
-    @PreAuthorize("@ss.hasPermission('admin:dict:del')")
+    @PreAuthorize("@ss.hasPermission('dict:data:del')")
     public Result<Void> del(@PathVariable Long dictCode){
         LongUtils.checkId(dictCode);
         dictDataService.removeByCode(dictCode);
@@ -109,7 +109,7 @@ public class DictDataController {
     @ApiOperation("删除字典数据")
     @DeleteMapping
     @Log(title = "删除字典类型",businessType = BusinessType.DELETE)
-    @PreAuthorize("@ss.hasPermission('admin:dict:del')")
+    @PreAuthorize("@ss.hasPermission('dict:data:del')")
     public Result<Void> batchDel(@RequestParam List<Long> dictCodeList){
         if (null == dictCodeList|| dictCodeList.isEmpty()){
             return Result.error("缺少必要参数!");

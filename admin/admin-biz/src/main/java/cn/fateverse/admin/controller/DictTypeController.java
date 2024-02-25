@@ -38,7 +38,7 @@ public class DictTypeController {
 
     @ApiOperation("获取字典类型")
     @GetMapping
-    @PreAuthorize("@ss.hasPermission('admin:dict:list')")
+    @PreAuthorize("@ss.hasPermission('dict:type:list')")
     public Result<TableDataInfo<DictType>> list(DictTypeQuery query){
         PageUtils.startPage();
         List<DictType> dictTypeList = dictTypeService.searchList(query);
@@ -56,7 +56,7 @@ public class DictTypeController {
 
     @ApiOperation("查询字典类型详情")
     @GetMapping("/{dictId}")
-    @PreAuthorize("@ss.hasPermission('admin:dict:info')")
+    @PreAuthorize("@ss.hasPermission('dict:type:info')")
     public Result<DictType> info(@PathVariable Long dictId){
         LongUtils.checkId(dictId);
         DictType dictType = dictTypeService.searchById(dictId);
@@ -66,7 +66,7 @@ public class DictTypeController {
     @ApiOperation("新增字典类型")
     @PostMapping
     @Log(title = "新增字典类型",businessType = BusinessType.INSERT)
-    @PreAuthorize("@ss.hasPermission('admin:dict:add')")
+    @PreAuthorize("@ss.hasPermission('dict:type:add')")
     public Result<Void> add(@RequestBody @Validated DictType dictType){
         dictTypeService.save(dictType);
         return Result.ok();
@@ -75,7 +75,7 @@ public class DictTypeController {
     @ApiOperation("修改字典类型")
     @PutMapping
     @Log(title = "修改字典类型",businessType = BusinessType.UPDATE)
-    @PreAuthorize("@ss.hasPermission('admin:dict:edit')")
+    @PreAuthorize("@ss.hasPermission('dict:type:edit')")
     public Result<Void> edit(@RequestBody @Validated DictTypeDto dictTypeDto){
         DictType dictType = new DictType();
         BeanUtils.copyProperties(dictTypeDto,dictType);
@@ -87,7 +87,7 @@ public class DictTypeController {
     @ApiOperation("删除字典类型")
     @DeleteMapping("/{dictId}")
     @Log(title = "删除字典类型",businessType = BusinessType.DELETE)
-    @PreAuthorize("@ss.hasPermission('admin:dict:del')")
+    @PreAuthorize("@ss.hasPermission('dict:type:del')")
     public Result<Void> del(@PathVariable Long dictId){
         LongUtils.checkId(dictId);
         dictTypeService.removeById(dictId);

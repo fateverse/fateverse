@@ -51,14 +51,14 @@ public class LogAspect {
 //    }
 
     @Around("@within(log) || @annotation(log)")
-    public Object before(ProceedingJoinPoint point, Log log) throws Throwable {
+    public Object around(ProceedingJoinPoint point, Log log) throws Throwable {
         long startTime = System.currentTimeMillis();
         try {
             Object proceed = point.proceed(point.getArgs());
             HttpServletRequest request = HttpServletUtils.getRequest();
             handleLog(point, proceed, request, null, log, true, startTime);
             return proceed;
-        }catch (Throwable e){
+        } catch (Throwable e) {
             HttpServletRequest request = HttpServletUtils.getRequest();
             handleLog(point, null, request, e, log, false, startTime);
             throw e;
@@ -117,7 +117,7 @@ public class LogAspect {
             String className = point.getTarget().getClass().getName();
             String methodName = point.getSignature().getName();
             operationLog.setMethod(className + "." + methodName + "()");
-            operationService.asyncExecute(operationLog,jsonResult,e,time);
+            operationService.asyncExecute(operationLog, jsonResult, e, time);
         } catch (Exception exp) {
             // 记录本地异常日志
             log.error("异常信息:{}", exp.getMessage());

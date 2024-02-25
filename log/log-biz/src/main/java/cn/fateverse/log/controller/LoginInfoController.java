@@ -51,7 +51,7 @@ public class LoginInfoController {
      */
     @DeleteMapping("/{infoIds}")
     @ApiOperation("登录日志删除")
-    @PreAuthorize("@ss.hasPermission('admin:log:remove')")
+    @PreAuthorize("@ss.hasPermission('admin:log:del')")
     public Result<Void> loginRemove(@PathVariable Long[] infoIds){
         if (infoIds.length==0){
             return Result.error("id不能为空");

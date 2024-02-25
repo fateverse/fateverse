@@ -54,7 +54,7 @@ public class OperationLogController {
 
     @DeleteMapping("/{operIds}")
     @ApiOperation("操作日志删除")
-    @PreAuthorize("@ss.hasPermission('admin:log:remove')")
+    @PreAuthorize("@ss.hasPermission('admin:log:del')")
     public Result<Integer> OperationInfoRemove(@PathVariable Long[] operIds) {
         if (operIds.length == 0) {
             return Result.error("id不能为空");

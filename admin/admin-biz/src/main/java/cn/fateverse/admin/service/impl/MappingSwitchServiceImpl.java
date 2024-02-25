@@ -13,6 +13,7 @@ import cn.fateverse.common.core.utils.TableSupport;
 import cn.fateverse.common.log.enums.OperateType;
 import cn.fateverse.common.mybatis.utils.PageUtils;
 import cn.fateverse.common.security.entity.MappingSwitchInfo;
+import cn.fateverse.common.security.utils.SecurityUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.redis.core.Cursor;
@@ -100,15 +101,7 @@ public class MappingSwitchServiceImpl implements MappingSwitchService {
         }
         if (mappingSwitchInfo.getState() != dto.getState()) {
             mappingSwitchInfo.setState(dto.getState());
-            try {
-                Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                if (null != principal && !UserConstants.ANONYMOUS_USER.equals(principal)) {
-                    String userName = ReflectUserUtils.getUsername(principal);
-                    mappingSwitchInfo.setOperName(userName);
-                }
-            } catch (Exception e) {
-                log.info("当前接口不是由登录后的用户触发的!");
-            }
+            mappingSwitchInfo.setOperName(SecurityUtils.getUsername());
             mappingSwitchInfo.setOperTime(new Date());
 
             redisTemplate.opsForValue().set(mappingSwitchInfo.getKey(), mappingSwitchInfo);
