@@ -8,6 +8,15 @@
 
 ## 快速开始
 
+### 相关地址 
+- 演示地址:
+    1. vue版本 [http://vue.fateverse.cn/](http://vue.fateverse.cn/)
+- 项目地址:
+    - 前端gitee地址: [https://gitee.com/fateverse/fateverse-vue](https://gitee.com/fateverse/fateverse-vue)
+    - 后端gitee地址: [https://gitee.com/fateverse/fateverse](https://gitee.com/fateverse/fateverse)
+    - 前端github地址: [https://github.com/fateverse/fateverse-vue](https://github.com/fateverse/fateverse-vue)
+    - 后端github地址: [https://github.com/fateverse/fateverse](https://github.com/fateverse/fateverse)
+
 ### 核心依赖
 
 | 依赖                   | 版本         |
