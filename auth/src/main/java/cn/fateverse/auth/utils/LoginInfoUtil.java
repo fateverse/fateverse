@@ -1,9 +1,9 @@
-package cn.fateverse.common.log.utils;
+package cn.fateverse.auth.utils;
 
 import cn.hutool.core.util.StrUtil;
 import cn.fateverse.common.core.utils.HttpServletUtils;
 import cn.fateverse.common.core.utils.IpUtils;
-import cn.fateverse.common.log.enums.LoginStatus;
+import cn.fateverse.auth.enums.LoginStatus;
 import cn.fateverse.log.entity.LoginInfo;
 import eu.bitwalker.useragentutils.UserAgent;
 

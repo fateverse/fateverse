@@ -1,8 +1,10 @@
 package cn.fateverse.auth.config;
 
+import cn.fateverse.auth.event.LoginInfoListener;
 import cn.fateverse.auth.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,7 +17,7 @@ import javax.annotation.Resource;
  * @date 2023-11-10  20:16
  */
 @Configuration
-public class SecurityConfig {
+public class AuthConfiguration {
 
 
     @Resource
@@ -23,6 +25,11 @@ public class SecurityConfig {
 
     @Resource
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Bean
+    public LoginInfoListener loginInfoListener(ThreadPoolTaskExecutor taskExecuteExecutor){
+        return new LoginInfoListener(taskExecuteExecutor);
+    }
 
 
     @Bean

@@ -1,4 +1,4 @@
-package cn.fateverse.common.log.event;
+package cn.fateverse.auth.event;
 
 import cn.fateverse.log.entity.LoginInfo;
 import org.springframework.context.ApplicationEvent;

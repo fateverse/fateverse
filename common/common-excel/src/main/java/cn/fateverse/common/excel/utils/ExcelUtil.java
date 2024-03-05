@@ -11,6 +11,7 @@ import cn.fateverse.common.core.annotaion.Excel;
 import cn.fateverse.common.core.annotaion.Excels;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import org.ehcache.impl.internal.concurrent.ConcurrentHashMap;
 import org.springframework.util.ReflectionUtils;
 
 import javax.servlet.http.HttpServletResponse;
@@ -25,9 +26,9 @@ import java.util.stream.Collectors;
  */
 public class ExcelUtil {
 
-    public static List<ExcelAssist> assistList = new ArrayList<>();
+    private static final Map<Class<?>, ExcelAssistWrapper> wrapperMap = new ConcurrentHashMap<>(8);
 
-    public static Map<String,Map<String,DictDataVo>> dictDataMap;
+    private static Map<String, Map<String, DictDataVo>> dictDataMap;
 
 
     private static ExcelService getBean() {
@@ -40,7 +41,7 @@ public class ExcelUtil {
      * @param list
      * @return
      */
-    private static List<List<Object>> getDataList(List<?> list) {
+    private static List<List<Object>> getDataList(List<?> list, List<ExcelAssist> assistList) {
         return list.stream().map(object ->
                 assistList.stream().map(assist -> {
                     Field field = assist.getField();
@@ -52,7 +53,7 @@ public class ExcelUtil {
                     } else {
                         Object sunValue = null;
                         try {
-                            sunValue = ReflectionUtils.getField(field,object);
+                            sunValue = ReflectionUtils.getField(field, object);
                         } catch (Exception e) {
                             return null;
                         }
@@ -75,16 +76,16 @@ public class ExcelUtil {
      */
     private static Object getData(Object object, Excel excel, Field field) {
         try {
-            Object objectValue = ReflectionUtils.getField(field,object);
+            Object objectValue = ReflectionUtils.getField(field, object);
             if (objectValue instanceof Date) {
-                objectValue = DateUtil.format((Date) objectValue,excel.dateFormat());
+                objectValue = DateUtil.format((Date) objectValue, excel.dateFormat());
             }
             String dictType = excel.dictType();
-            if (!StrUtil.isEmpty(dictType)){
-                Map<String,DictDataVo> dictMap = dictDataMap.get(dictType);
-                if (null != dictMap){
+            if (!StrUtil.isEmpty(dictType)) {
+                Map<String, DictDataVo> dictMap = dictDataMap.get(dictType);
+                if (null != dictMap) {
                     DictDataVo dictData = dictMap.get(objectValue.toString());
-                    if (null!= dictData){
+                    if (null != dictData) {
                         objectValue = dictData.getDictLabel();
                     }
                 }
@@ -101,7 +102,7 @@ public class ExcelUtil {
      * @param clazz
      * @param assist
      */
-    private static void initHeader(Class<?> clazz, ExcelAssist assist) {
+    private static void initHeader(Class<?> clazz, ExcelAssist assist, List<ExcelAssist> assistList) {
         for (Field field : clazz.getDeclaredFields()) {
             Excel excel = field.getAnnotation(Excel.class);
             if (null != excel) {
@@ -116,7 +117,7 @@ public class ExcelUtil {
                     throw new CustomException("不允许嵌套对象导出Excel");
                 }
                 ExcelAssist excelAssist = new ExcelAssist(field, excels);
-                initHeader(objectValue, excelAssist);
+                initHeader(objectValue, excelAssist, assistList);
             }
         }
     }
@@ -135,26 +136,42 @@ public class ExcelUtil {
     public static void exportExcel(List<?> list, Class<?> clazz, String sheetName) {
         Set<String> dictList = new HashSet<>();
 
-        initHeader(clazz, null);
-        List<List<String>> headerList = new ArrayList<>(assistList.size());
-        assistList = assistList.stream().sorted(Comparator.comparing(ExcelAssist::getOrder))
-                .peek(assist -> headerList.add(Collections.singletonList(assist.getExcel().value())))
-                .peek(assist -> {
-                    String dictType = assist.getExcel().dictType();
-                    if (!StrUtil.isEmpty(dictType)) {
-                        dictList.add(dictType);
-                    }
-                })
-                .collect(Collectors.toList());
+        ExcelAssistWrapper wrapper = wrapperMap.get(clazz);
+        if (wrapper == null) {
+            synchronized (wrapperMap) {
+                wrapper = wrapperMap.get(clazz);
+                if (wrapper == null) {
+                    wrapper = new ExcelAssistWrapper();
+                    List<ExcelAssist> assistList = new ArrayList<>();
+                    initHeader(clazz, null, assistList);
+                    List<List<String>> headerList = new ArrayList<>(assistList.size());
+                    assistList = assistList.stream().sorted(Comparator.comparing(ExcelAssist::getOrder))
+                            .peek(assist -> headerList.add(Collections.singletonList(assist.getExcel().value())))
+                            .peek(assist -> {
+                                String dictType = assist.getExcel().dictType();
+                                if (!StrUtil.isEmpty(dictType)) {
+                                    dictList.add(dictType);
+                                }
+                            })
+                            .collect(Collectors.toList());
+
+                    wrapper.assistList = assistList;
+                    wrapper.headerList = headerList;
+                    wrapperMap.put(clazz, wrapper);
+                }
+            }
+        }
+
+
         if (dictList.size() > 0) {
             getDictData(new ArrayList<>(dictList));
         }
-        List<List<Object>> dataList = getDataList(list);
+        List<List<Object>> dataList = getDataList(list, wrapper.assistList);
         try {
             sheetName = StrUtil.isEmpty(sheetName) ? "sheet" : sheetName;
             HttpServletResponse response = getResponse(sheetName);
             EasyExcel.write(response.getOutputStream())
-                    .head(headerList)
+                    .head(wrapper.headerList)
                     .excelType(ExcelTypeEnum.XLSX)
                     .sheet(StrUtil.isEmpty(sheetName) ? "sheet" : sheetName)
                     .doWrite(dataList);
@@ -164,21 +181,26 @@ public class ExcelUtil {
     }
 
 
-    private static HttpServletResponse getResponse(String sheetName){
+    private static HttpServletResponse getResponse(String sheetName) {
         HttpServletResponse response = HttpServletUtils.getResponse();
         response.setCharacterEncoding("utf-8");
         response.setContentType("multipart/form-data");
-        response.setHeader("Content-Disposition" ,
+        response.setHeader("Content-Disposition",
                 "attachment;fileName=" + sheetName + UUID.randomUUID() + ".xlsx");
         return response;
     }
 
     private static void getDictData(List<String> dictList) {
-        ExcelService dictDataService =  getBean();
+        ExcelService dictDataService = getBean();
         Map<String, Map<String, DictDataVo>> result = dictDataService.searchDictDataCacheKeys(dictList);
-        if (null != result){
+        if (null != result) {
             System.out.println(result.toString());
             dictDataMap = result;
         }
+    }
+
+    private static class ExcelAssistWrapper {
+        private List<ExcelAssist> assistList;
+        List<List<String>> headerList;
     }
 }

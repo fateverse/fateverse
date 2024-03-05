@@ -1,4 +1,4 @@
-package cn.fateverse.common.log.enums;
+package cn.fateverse.auth.enums;
 
 /**
  * @author Clay

@@ -45,10 +45,6 @@ public class LogAspect {
     private final ThreadLocal<Long> startTime = new ThreadLocal<>();
 
 
-//    @Before("@within(log) || @annotation(log)")
-//    public void before(JoinPoint point, Log log) {
-//        startTime.set(System.currentTimeMillis());
-//    }
 
     @Around("@within(log) || @annotation(log)")
     public Object around(ProceedingJoinPoint point, Log log) throws Throwable {
@@ -58,29 +54,13 @@ public class LogAspect {
             HttpServletRequest request = HttpServletUtils.getRequest();
             handleLog(point, proceed, request, null, log, true, startTime);
             return proceed;
-        } catch (Throwable e) {
+        }catch (Throwable e){
             HttpServletRequest request = HttpServletUtils.getRequest();
             handleLog(point, null, request, e, log, false, startTime);
             throw e;
         }
 
     }
-
-
-//    @AfterReturning(pointcut = "@within(log) || @annotation(log)", returning = "jsonResult")
-//    public void doAfterReturning(JoinPoint point, Object jsonResult, Log log) {
-//        HttpServletRequest request = HttpServletUtils.getRequest();
-//        handleLog(point, jsonResult, request, null, log, true, startTime.get());
-//        startTime.remove();
-//    }
-
-
-//    @AfterThrowing(pointcut = "@within(log) || @annotation(log)", throwing = "e")
-//    public void doAfterThrowing(JoinPoint point, Exception e, Log log) throws Exception {
-//        HttpServletRequest request = HttpServletUtils.getRequest();
-//        handleLog(point, null, request, e, log, false, startTime.get());
-//        startTime.remove();
-//    }
 
 
     protected Boolean check(Boolean success) {
@@ -117,7 +97,7 @@ public class LogAspect {
             String className = point.getTarget().getClass().getName();
             String methodName = point.getSignature().getName();
             operationLog.setMethod(className + "." + methodName + "()");
-            operationService.asyncExecute(operationLog, jsonResult, e, time);
+            operationService.asyncExecute(operationLog,jsonResult,e,time);
         } catch (Exception exp) {
             // 记录本地异常日志
             log.error("异常信息:{}", exp.getMessage());

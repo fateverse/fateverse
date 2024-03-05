@@ -1,4 +1,4 @@
-package cn.fateverse.common.log.event;
+package cn.fateverse.auth.event;
 
 import cn.fateverse.log.dubbo.DubboLogService;
 import cn.fateverse.log.entity.LoginInfo;
