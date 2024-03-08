@@ -44,7 +44,7 @@ public class RequestGlobalFilter implements GlobalFilter, Ordered {
         log.info("Method:{{}} Host:{{}} 远程ip:{{}} Path:{{}} Query:{{}}", request.getMethod().name(), request.getURI().getHost(), remoteAddress, request.getURI().getPath(), request.getQueryParams());
         Boolean flag = redisTemplate.opsForSet().isMember(IpBackUtils.BLACK_LIST_IP, remoteAddress);
         if (flag != null && flag) {
-            return errorInfo(exchange, Result.error(HttpStatus.FORBIDDEN, "ip为黑名单,无权访问"));
+            return errorInfo(exchange, Result.error(HttpStatus.NETWORK_AUTHENTICATION_REQUIRED, "ip为黑名单,无权访问"));
         }
         return chain.filter(exchange);
     }
