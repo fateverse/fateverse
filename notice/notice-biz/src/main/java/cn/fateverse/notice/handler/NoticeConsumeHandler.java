@@ -3,6 +3,7 @@ package cn.fateverse.notice.handler;
 import cn.fateverse.notice.entity.NoticeMq;
 import cn.fateverse.notice.entity.UserInfo;
 import cn.fateverse.notice.entity.vo.NotifyVo;
+import com.alibaba.fastjson2.JSONObject;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+
 import static cn.fateverse.notice.constant.NoticeConstant.*;
 
 /**
@@ -48,22 +50,12 @@ public class NoticeConsumeHandler {
      * @return 发送结果
      */
     private boolean sendUser(NoticeMq notice) {
-        //单个用户时,直接发送到对应用户的Channel
-        if (notice.getSenderIds().size() == 1 && notice.getChannelId() != null) {
-            Channel channel = ChannelHandlerPool.getChannel(notice.getChannelId(), notice.getCluster());
-            if (null == channel) {
-                return false;
-            }
-            channel.writeAndFlush(ChannelHandlerPool.getText(NotifyVo.toNotifyVo(notice)));
-            return true;
-        } else {
-            //多个用户或者当前用户拥有多个连接时,判断当前用户是否处于活跃状态
-            Predicate<Channel> predicate = channel -> {
-                UserInfo userInfo = channel.attr(ChannelHandlerPool.USER_INFO).get();
-                return notice.getSenderIds().contains(Long.valueOf(userInfo.getUserId()));
-            };
-            return ChannelHandlerPool.sendPredicateChannel(predicate, notice);
-        }
+        //多个用户或者当前用户拥有多个连接时,判断当前用户是否处于活跃状态
+        Predicate<Channel> predicate = channel -> {
+            UserInfo userInfo = channel.attr(ChannelHandlerPool.USER_INFO).get();
+            return notice.getSenderIds().contains(Long.valueOf(userInfo.getUserId()));
+        };
+        return ChannelHandlerPool.sendPredicateChannel(predicate, notice);
     }
 
     /**

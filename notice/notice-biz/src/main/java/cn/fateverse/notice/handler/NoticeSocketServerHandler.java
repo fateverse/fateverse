@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
@@ -36,7 +37,8 @@ import java.util.stream.Collectors;
 @Component
 public class NoticeSocketServerHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
 
-    private final RedisTemplate<String, UserInfo> redisTemplate;
+    @Resource
+    private RedisTemplate<String, UserInfo> redisTemplate;
 
     private final TokenService tokenService;
 
@@ -44,8 +46,7 @@ public class NoticeSocketServerHandler extends SimpleChannelInboundHandler<TextW
 
     private final DelayQueueChannelAuth delayQueueChannelAuth;
 
-    public NoticeSocketServerHandler(@Qualifier("noticeRedisTemplate") RedisTemplate<String, UserInfo> redisTemplate, TokenService tokenService, RabbitConfig rabbitConfig, DelayQueueChannelAuth delayQueueChannelAuth) {
-        this.redisTemplate = redisTemplate;
+    public NoticeSocketServerHandler(TokenService tokenService, RabbitConfig rabbitConfig, DelayQueueChannelAuth delayQueueChannelAuth) {
         this.tokenService = tokenService;
         this.rabbitConfig = rabbitConfig;
         this.delayQueueChannelAuth = delayQueueChannelAuth;
@@ -147,7 +148,6 @@ public class NoticeSocketServerHandler extends SimpleChannelInboundHandler<TextW
                     .redisKey(subKey)
                     .cluster(auth.getCluster())
                     .routingKey(rabbitConfig.getRoutingKey())
-                    .channelId(channel.id())
                     .build();
             //存放到redis中
             redisTemplate.opsForValue().set(redisKey + RedisConstant.REDIS_SEPARATOR + subKey, info, RedisConstant.REDIS_EXPIRE, TimeUnit.SECONDS);

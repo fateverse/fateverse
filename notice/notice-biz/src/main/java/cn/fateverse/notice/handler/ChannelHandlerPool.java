@@ -12,6 +12,7 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.GlobalEventExecutor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -82,12 +83,18 @@ public class ChannelHandlerPool {
         if (null == channelGroup) {
             return true;
         }
+        JSONObject send = getSendNotice(notice);
+        channelGroup.writeAndFlush(ChannelHandlerPool.getText(send), predicate::test);
+        return true;
+    }
+
+    @NotNull
+    public static JSONObject getSendNotice(NoticeMq notice) {
         NotifyVo notifyVo = NotifyVo.toNotifyVo(notice);
         JSONObject send = new JSONObject();
         send.put("type","notice");
         send.put("notice",notifyVo);
-        channelGroup.writeAndFlush(ChannelHandlerPool.getText(send), predicate::test);
-        return true;
+        return send;
     }
 
     /**

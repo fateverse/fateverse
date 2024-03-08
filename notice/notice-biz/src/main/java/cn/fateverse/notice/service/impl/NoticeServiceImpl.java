@@ -30,7 +30,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
@@ -52,12 +51,13 @@ import static cn.fateverse.notice.constant.NoticeConstant.*;
 @Service
 public class NoticeServiceImpl implements NoticeService {
 
-    private final RedisTemplate<String, UserInfo> redisTemplate;
+    @Resource
+    private RedisTemplate<String, UserInfo> redisTemplate;
 
     @Resource
     private NoticeProperties properties;
-    @Resource
-    private RabbitTemplate rabbitTemplate;
+
+    private final RabbitTemplate rabbitTemplate;
 
     private final NoticeMapper noticeMapper;
 
@@ -73,9 +73,9 @@ public class NoticeServiceImpl implements NoticeService {
     private DubboDeptService deptService;
 
 
-    public NoticeServiceImpl(@Qualifier("noticeRedisTemplate") RedisTemplate<String, UserInfo> redisTemplate, NoticeMapper noticeMapper,
+    public NoticeServiceImpl(RabbitTemplate rabbitTemplate, NoticeMapper noticeMapper,
                              UserNoticeMapper userNoticeMapper) {
-        this.redisTemplate = redisTemplate;
+        this.rabbitTemplate = rabbitTemplate;
         this.noticeMapper = noticeMapper;
         this.userNoticeMapper = userNoticeMapper;
     }
@@ -259,7 +259,6 @@ public class NoticeServiceImpl implements NoticeService {
                 String userKey = keys.get(0);
                 UserInfo userInfo = redisTemplate.opsForValue().get(userKey);
                 if (null != userInfo) {
-                    mq.setChannelId(userInfo.getChannelId());
                     boolean state = Boolean.TRUE.equals(rabbitTemplate.invoke(operations -> {
                         rabbitTemplate.convertAndSend(properties.getExchangeChatRanch(), userInfo.getRoutingKey(), mq);
                         return rabbitTemplate.waitForConfirms(5000);
