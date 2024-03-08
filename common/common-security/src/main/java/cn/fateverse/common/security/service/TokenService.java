@@ -118,6 +118,7 @@ public class TokenService {
         if (!StrUtil.isEmpty(token)) {
             String userKey = getTokenKey(token);
             redisTemplate.delete(userKey);
+            redisTemplate.delete(CacheConstants.ROUTE_CACHE_KEY + token);
         }
     }
 

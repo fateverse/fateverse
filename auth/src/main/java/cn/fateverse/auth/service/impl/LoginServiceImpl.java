@@ -31,6 +31,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -156,11 +157,15 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public List<RouterVo> getMenuRouterByUserId() {
-        List<RouterVo> result = (List<RouterVo>) redisTemplate.opsForValue().get(CacheConstants.ROUTE_CACHE_KEY + SecurityUtils.getUserId());
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        if (ObjectUtils.isEmpty(loginUser)){
+            throw new CustomException("获取用户信息失败!");
+        }
+        List<RouterVo> result = (List<RouterVo>) redisTemplate.opsForValue().get(CacheConstants.ROUTE_CACHE_KEY + loginUser.getUuid());
         if (result == null || result.isEmpty()) {
-            RLock lock = redissonClient.getLock(CacheConstants.ROUTE_CACHE_KEY + "lock:" + SecurityUtils.getUserId());
+            RLock lock = redissonClient.getLock(CacheConstants.ROUTE_CACHE_KEY + "lock:" + loginUser.getUuid());
             try {
-                result = (List<RouterVo>) redisTemplate.opsForValue().get(CacheConstants.ROUTE_CACHE_KEY + SecurityUtils.getUserId());
+                result = (List<RouterVo>) redisTemplate.opsForValue().get(CacheConstants.ROUTE_CACHE_KEY + loginUser.getUuid());
                 if (result == null || result.isEmpty()) {
                     result = menuService.selectMenuRouterByUserId(SecurityUtils.getUserId());
                     if (result == null || result.isEmpty()) {
@@ -168,7 +173,7 @@ public class LoginServiceImpl implements LoginService {
 //                        throw new CustomException("获取路由异常!");
                         return new ArrayList<>();
                     }
-                    redisTemplate.opsForValue().set(CacheConstants.ROUTE_CACHE_KEY + SecurityUtils.getUserId(),result,30, TimeUnit.MINUTES);
+                    redisTemplate.opsForValue().set(CacheConstants.ROUTE_CACHE_KEY + loginUser.getUuid(), result, 30, TimeUnit.MINUTES);
                 }
             } finally {
                 if (lock.isLocked() && lock.isHeldByCurrentThread()) {

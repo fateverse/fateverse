@@ -25,8 +25,6 @@ public class UserInfo implements Serializable {
 
     private String routingKey;
 
-    private ChannelId channelId;
-
     private String cluster;
 
     private Set<Long> roleSet;

@@ -14,7 +14,7 @@ public class CacheConstants {
     /**
      * 路由缓存地址
      */
-    public static final String ROUTE_CACHE_KEY = "router_key:";
+    public static final String ROUTE_CACHE_KEY = "router:key:";
     /**
      * 登录用户 redis key
      */

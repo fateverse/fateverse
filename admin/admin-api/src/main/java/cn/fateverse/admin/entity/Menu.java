@@ -56,12 +56,12 @@ public class Menu extends BaseEntity {
     private String component;
 
     /**
-     * 是否为外链（0是 1否）
+     * 是否为外链（1是 0否）
      */
     private Boolean isFrame;
 
     /**
-     * 是否缓存（0缓存 1不缓存）
+     * 是否缓存（1 缓存 0不缓存）
      */
     private Boolean isCache;
 
@@ -76,12 +76,12 @@ public class Menu extends BaseEntity {
     private String menuType;
 
     /**
-     * 显示状态（0显示 1隐藏）
+     * 显示状态（1显示 0隐藏）
      */
     private String visible;
 
     /**
-     * 菜单状态（0显示 1隐藏）
+     * 菜单状态（1正常 0停用）
      */
     private String state;
 

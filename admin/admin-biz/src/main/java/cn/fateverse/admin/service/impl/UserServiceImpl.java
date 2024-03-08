@@ -307,6 +307,7 @@ public class UserServiceImpl implements UserService {
         batchUserPost(dto, Boolean.TRUE);
         dto.setPassword(null);
         UserBase user = dto.toUser();
+
         return userMapper.update(user);
     }
 

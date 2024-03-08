@@ -76,7 +76,7 @@ public class UserController {
         return Result.ok(userChooseList);
     }
 
-    @ApiOperation("获取用户列表")
+    @ApiOperation("获取用户详情")
     @GetMapping("/info/{userId}")
     @PreAuthorize("@ss.hasPermission('admin:user:info')")
     public Result<UserDetailVo> info(@PathVariable Long userId) {
@@ -200,7 +200,7 @@ public class UserController {
     }
 
 
-    @ApiOperation("建立角色用户绑定关系")
+    @ApiOperation("建立岗位用户绑定关系")
     @PutMapping("/bind/post")
     @PreAuthorize("@ss.hasPermission('admin:user:bindPost')")
     @Log(title = "建立角色用户绑定关系", businessType = BusinessType.UPDATE)

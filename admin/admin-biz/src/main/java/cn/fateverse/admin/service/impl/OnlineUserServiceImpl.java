@@ -1,5 +1,6 @@
 package cn.fateverse.admin.service.impl;
 
+import cn.fateverse.admin.entity.Dept;
 import cn.fateverse.common.core.entity.PageInfo;
 import cn.fateverse.common.core.result.page.TableDataInfo;
 import cn.fateverse.common.core.utils.TableSupport;
@@ -35,7 +36,7 @@ public class OnlineUserServiceImpl implements OnlineUserService {
      * todo 现阶段一次性将所有用户全部返回,后期想办法进行分页操作
      *
      * @param place
-     * @param username
+     * @param username 用户名
      * @return
      */
     @Override
@@ -72,19 +73,25 @@ public class OnlineUserServiceImpl implements OnlineUserService {
     @Override
     public void force(String tokenId) {
         redisTemplate.delete(CacheConstants.LOGIN_TOKEN_KEY + tokenId);
+        redisTemplate.delete(CacheConstants.ROUTE_CACHE_KEY + tokenId);
     }
 
     private OnlineUser toOnlineUser(LoginUser user) {
-        return OnlineUser.builder()
+        OnlineUser onlineUser = OnlineUser.builder()
                 .tokenId(user.getUuid())
                 .username(user.getUsername())
-                .deptName(user.getUser().getDept().getDeptName())
                 .ipAddr(user.getIpddr())
                 .loginLocation(user.getLoginLocation())
                 .browser(user.getBrowser())
                 .os(user.getOs())
                 .loginTime(new Date(user.getLoginTime()))
                 .build();
+
+        Dept dept = user.getUser().getDept();
+        if (dept != null) {
+            onlineUser.setDeptName(dept.getDeptName());
+        }
+        return onlineUser;
     }
 
 
