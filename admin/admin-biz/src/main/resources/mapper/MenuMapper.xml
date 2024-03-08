@@ -61,13 +61,38 @@
     </select>
 
     <select id="selectListByUserId" resultType="cn.fateverse.admin.entity.Menu">
-        <include refid="selectMenuVo"/>
+        select distinct m.menu_id,
+                m.menu_name,
+                m.parent_id,
+                m.order_num,
+                m.path,
+                m.path_params,
+                m.component,
+                m.no_redirect,
+                m.breadcrumb,
+                m.is_frame,
+                m.is_cache,
+                m.menu_type,
+                m.visible,
+                m.state,
+                m.order_num,
+                ifnull(m.perms, '') as perms,
+                m.icon,
+                m.create_by,
+                m.create_time,
+                m.update_by,
+                m.update_time,
+                m.remark
+                from sys_menu m
+        left join sys_role_menu rm on rm.menu_id = m.menu_id
+        left join sys_role r on r.role_id = rm.role_id
+        left join sys_user_role ur on ur.role_id = r.role_id
         <where>
-            <if test="userId != null">and user_id = #{userId}</if>
-            <if test="menuName != null and menuName != ''">and menu_name like concat('%',#{menuName},'%')</if>
-            <if test="state != null and state != ''">and state = #{state}</if>
-            <if test="excludeId != null ">and menu_id != #{excludeId} and parent_id != #{excludeId}</if>
-            <if test="button">and menu_type in ('D', 'M')</if>
+            <if test="userId != null">and ur.user_id = #{userId}</if>
+            <if test="menuName != null and menuName != ''">and m.menu_name like concat('%',#{menuName},'%')</if>
+            <if test="state != null and state != ''">and m.state = #{state}</if>
+            <if test="excludeId != null ">and m.menu_id != #{excludeId} and parent_id != #{excludeId}</if>
+            <if test="button">and m.menu_type in ('D', 'M')</if>
         </where>
     </select>
 

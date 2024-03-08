@@ -282,9 +282,9 @@ public class MenuServiceImpl implements MenuService {
     private void initButton(Menu menu) {
         menu.setComponent(null);
         menu.setPath(null);
-        menu.setIsFrame(null);
-        menu.setIsCache(null);
-        menu.setVisible(null);
+        menu.setIsFrame(Boolean.FALSE);
+        menu.setIsCache(Boolean.TRUE);
+        menu.setVisible("0");
         menu.setIcon(null);
     }
 }

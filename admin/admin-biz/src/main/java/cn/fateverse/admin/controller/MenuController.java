@@ -70,8 +70,9 @@ public class MenuController {
         return Result.ok(optionMenuVo);
     }
 
-    @ApiOperation("获取树形接口的option")
+    @ApiOperation("菜单详情")
     @GetMapping("/info/{menuId}")
+    @PreAuthorize("@ss.hasPermission('admin:menu:info')")
     public Result<MenuVo> info(@PathVariable Long menuId) {
         ObjectUtils.checkPk(menuId);
         MenuVo menu = menuService.searchByMenuId(menuId);

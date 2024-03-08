@@ -72,7 +72,7 @@ public class MenuTree {
                     .name(getRouteName(menu))
                     .path(getRouterPath(menu, parent))
                     .pathParams(menu.getPathParams())
-                    .hidden("1".equals(menu.getVisible()))
+                    .hidden("0".equals(menu.getVisible()))
                     .component(getComponent(menu))
                     .meta(meta)
                     .build();
