@@ -59,4 +59,5 @@ public interface IpBackService {
     void delete(List<Long> ids);
 
 
+    List<IpBackVo> exportList(IpBackQuery query);
 }

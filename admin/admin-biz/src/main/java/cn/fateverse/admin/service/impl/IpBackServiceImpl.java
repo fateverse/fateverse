@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Clay
@@ -186,5 +187,12 @@ public class IpBackServiceImpl implements IpBackService {
             }
         }
     }
+
+   public List<IpBackVo> exportList(IpBackQuery query){
+       List<IpBack> list = ipBackMapper.selectList(query);
+       return list.stream().map(IpBackVo::toIpBackVo).collect(Collectors.toList());
+
+   }
+
 
 }

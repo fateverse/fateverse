@@ -3,10 +3,12 @@ package cn.fateverse.admin.controller;
 import cn.fateverse.admin.dto.IpBackDto;
 import cn.fateverse.admin.query.IpBackQuery;
 import cn.fateverse.admin.service.IpBackService;
+import cn.fateverse.admin.vo.ConfigVo;
 import cn.fateverse.admin.vo.IpBackVo;
 import cn.fateverse.common.core.result.Result;
 import cn.fateverse.common.core.result.page.TableDataInfo;
 import cn.fateverse.common.core.utils.ObjectUtils;
+import cn.fateverse.common.excel.utils.ExcelUtil;
 import cn.fateverse.common.log.annotation.Log;
 import cn.fateverse.common.log.enums.BusinessType;
 import io.swagger.annotations.Api;
@@ -46,8 +48,8 @@ public class IpBackController {
     @GetMapping("/export")
     @PreAuthorize("@ss.hasPermission('admin:ipback:export')")
     public void export(IpBackQuery query) {
-        //List<IpBackVo> list = configService.exportList(query);
-        //ExcelUtil.exportExcel(list,ConfigVo.class);
+        List<IpBackVo> list = ipBackService.exportList(query);
+        ExcelUtil.exportExcel(list, IpBackVo.class);
     }
 
     @ApiOperation("获取ip黑名单详细信息")

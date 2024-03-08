@@ -22,7 +22,7 @@
             <if test="ipAddr != null and ipAddr != ''">ip_addr like concat('%', #{ipAddr}, '%')</if>
             <if test="type != null and type != ''">type = type</if>
             <if test="startTime != null and endTime != null">
-                and u.create_time between #{startTime} and #{endTime}
+                and create_time between #{startTime} and #{endTime}
             </if>
         </where>
     </select>

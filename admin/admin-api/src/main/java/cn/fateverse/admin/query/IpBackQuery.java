@@ -1,5 +1,6 @@
 package cn.fateverse.admin.query;
 
+import cn.fateverse.common.core.annotaion.Excel;
 import cn.fateverse.common.core.entity.QueryTime;
 import lombok.Data;
 
@@ -13,6 +14,7 @@ public class IpBackQuery extends QueryTime {
      * ip地址
      */
     private String ipAddr;
+
     /**
      * ip类型 ipv4 ipv6
      */
