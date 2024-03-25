@@ -12,11 +12,15 @@
     <artifactId>common-dubbo</artifactId>
 
     <properties>
-        <dubbo.version>3.0.3</dubbo.version>
+        <dubbo.version>3.1.0</dubbo.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
         <!-- Dubbo Nacos registry dependency -->
+        <dependency>
+            <groupId>cn.fateverse</groupId>
+            <artifactId>common-core</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-registry-nacos</artifactId>
@@ -45,6 +49,12 @@
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-spring-boot-starter</artifactId>
             <version>${dubbo.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.alibaba.fastjson2</groupId>
+                    <artifactId>fastjson2</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!--dubbo sentinel 适配器-->
 <!--        <dependency>-->

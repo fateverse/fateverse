@@ -87,19 +87,23 @@ public class MappingSwitchVo {
     private String operName;
 
     public static MappingSwitchVo toMappingSwitchVo(MappingSwitchInfo mappingSwitchInfo) {
-        return MappingSwitchVo.builder()
+        MappingSwitchVo mappingSwitchVo = MappingSwitchVo.builder()
                 .key(mappingSwitchInfo.getKey())
                 .applicationName(mappingSwitchInfo.getApplicationName())
                 .className(mappingSwitchInfo.getClassName())
                 .description(mappingSwitchInfo.getDescription())
                 .methodName(mappingSwitchInfo.getMethodName())
                 .uris(mappingSwitchInfo.getUris())
-                .type(mappingSwitchInfo.getType().toString())
                 .httpMethods(mappingSwitchInfo.getHttpMethods())
                 .state(mappingSwitchInfo.getState())
                 .operName(mappingSwitchInfo.getOperName())
                 .operTime(mappingSwitchInfo.getOperTime())
                 .build();
+        MappingSwitchInfo.MappingSwitchType switchType = mappingSwitchInfo.getType();
+        if (switchType != null) {
+            mappingSwitchVo.setType(switchType.name());
+        }
+        return mappingSwitchVo;
     }
 
 

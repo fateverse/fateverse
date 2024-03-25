@@ -34,7 +34,7 @@ public class CaptchaConfig {
         //鱼眼 com.google.code.kaptcha.impl.FishEyeGimpy
         //阴影 com.google.code.kaptcha.impl.ShadowGimpy
 //        properties.setProperty(KAPTCHA_TEXTPRODUCER_CHAR_STRING,"123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ#$!@&%");
-        properties.setProperty(KAPTCHA_TEXTPRODUCER_CHAR_STRING,"123456789#$@&%");
+        properties.setProperty(KAPTCHA_TEXTPRODUCER_CHAR_STRING,"1234567890");
         properties.setProperty(KAPTCHA_OBSCURIFICATOR_IMPL, "com.google.code.kaptcha.impl.ShadowGimpy");
         DefaultKaptcha defaultKaptcha = new DefaultKaptcha();
         Config config = new Config(properties);

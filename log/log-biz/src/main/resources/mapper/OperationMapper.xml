@@ -7,6 +7,7 @@
     <resultMap type="cn.fateverse.log.entity.OperationLog" id="OperationLogResult">
         <id property="operId" column="oper_id"/>
         <result property="title" column="title"/>
+        <result property="applicationName" column="application_name"/>
         <result property="businessType" column="business_type"/>
         <result property="method" column="method"/>
         <result property="requestMethod" column="request_method"/>
@@ -24,15 +25,35 @@
         <result property="consumeTime" column="consume_time"/>
     </resultMap>
 
+    <sql id="selectSql">
+        select oper_id,
+               title,
+               application_name,
+               business_type,
+               method,
+               request_method,
+               operator_type,
+               oper_name,
+               dept_name,
+               oper_url,
+               oper_ip,
+               oper_location,
+               state,
+               oper_time,
+               consume_time
+        from sys_operation_log
+    </sql>
+
 
     <insert id="batchSave">
         insert into sys_operation_log
-        (oper_id, title, business_type, method, request_method, operator_type, oper_name, dept_name, oper_url, oper_ip,
+        (oper_id, title, application_name, business_type, method, request_method, operator_type, oper_name, dept_name,
+        oper_url, oper_ip,
         oper_location, oper_param, json_result, state, error_msg, error_stack_trace, oper_time, consume_time)
         values
         <foreach collection="list" item="log" separator=",">
-            (#{log.operId}, #{log.title}, #{log.businessType}, #{log.method}, #{log.requestMethod}, #{log.operatorType},
-            #{log.operName},
+            (#{log.operId}, #{log.title}, #{log.applicationName}, #{log.businessType}, #{log.method},
+            #{log.requestMethod}, #{log.operatorType},#{log.operName},
             #{log.deptName}, #{log.operUrl}, #{log.operIp}, #{log.operLocation}, #{log.operParam}, #{log.jsonResult},
             #{log.state}, #{log.errorMsg},
             #{log.errorStackTrace}, #{log.operTime}, #{log.consumeTime})
@@ -41,14 +62,15 @@
 
     <select id="searchSubQuery" resultMap="OperationLogResult"
             parameterType="cn.fateverse.log.query.OperationLogQuery">
-        select oper_id, title, business_type, method, request_method, operator_type, oper_name, dept_name, oper_url,
-        oper_ip, oper_location, state, oper_time, consume_time
-        from sys_operation_log
+        <include refid="selectSql"/>
         <where>
             oper_id >= (select oper_id from sys_operation_log
             <where>
                 <if test="operation.title !=null and operation.title !=''">
                     and title like concat('%',#{operation.title},'%')
+                </if>
+                <if test="operation.applicationName !=null and operation.applicationName !=''">
+                    and application_name like concat('%',#{operation.applicationName},'%')
                 </if>
                 <if test="operation.operName !=null and operation.operName !=''">
                     and oper_name like concat('%',#{operation.operName},'%')
@@ -70,6 +92,9 @@
             )
             <if test="operation.title !=null and operation.title !=''">
                 and title like concat('%',#{operation.title},'%')
+            </if>
+            <if test="operation.applicationName !=null and operation.applicationName !=''">
+                and application_name like concat('%',#{operation.applicationName},'%')
             </if>
             <if test="operation.operName !=null and operation.operName !=''">
                 and oper_name like concat('%',#{operation.operName},'%')
@@ -93,12 +118,13 @@
 
     <select id="search" resultMap="OperationLogResult"
             parameterType="cn.fateverse.log.query.OperationLogQuery">
-        select oper_id, title, business_type, method, request_method, operator_type, oper_name, dept_name, oper_url,
-        oper_ip, oper_location, state, oper_time, consume_time
-        from sys_operation_log
+        <include refid="selectSql"/>
         <where>
             <if test="operation.title !=null and operation.title !=''">
                 and title like concat('%',#{operation.title},'%')
+            </if>
+            <if test="operation.applicationName !=null and operation.applicationName !=''">
+                and application_name like concat('%',#{operation.applicationName},'%')
             </if>
             <if test="operation.operName !=null and operation.operName !=''">
                 and oper_name like concat('%',#{operation.operName},'%')
@@ -124,6 +150,9 @@
         <where>
             <if test="operation.title !=null and operation.title !=''">
                 and title like concat('%',#{operation.title},'%')
+            </if>
+            <if test="operation.applicationName !=null and operation.applicationName !=''">
+                and application_name like concat('%',#{operation.applicationName},'%')
             </if>
             <if test="operation.operName !=null and operation.operName !=''">
                 and oper_name like concat('%',#{operation.operName},'%')
@@ -153,6 +182,7 @@
     <select id="selectById" resultMap="OperationLogResult">
         select oper_id,
                title,
+               application_name,
                business_type,
                method,
                request_method,

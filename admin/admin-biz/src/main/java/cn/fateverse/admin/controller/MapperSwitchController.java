@@ -1,6 +1,6 @@
 package cn.fateverse.admin.controller;
 
-import cn.fateverse.admin.dto.MappingSwitchDto;
+import cn.fateverse.admin.entity.dto.MappingSwitchDto;
 import cn.fateverse.admin.entity.vo.MappingSwitchVo;
 import cn.fateverse.admin.query.MappingSwitchQuery;
 import cn.fateverse.admin.service.MappingSwitchService;

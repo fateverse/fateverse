@@ -25,10 +25,5 @@
             <artifactId>common-swagger</artifactId>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>cn.fateverse</groupId>
-            <artifactId>common-decrypt</artifactId>
-            <optional>true</optional>
-        </dependency>
     </dependencies>
 </project>

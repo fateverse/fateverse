@@ -43,7 +43,6 @@ public class GlobalExceptionHandler {
 
 
     /**
-     * /**
      * 业务异常
      */
     @ExceptionHandler(CustomException.class)
@@ -61,7 +60,7 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(NoHandlerFoundException.class)
-    public Result<Object> handlerNoFoundException(Exception e) {
+    public Result<Object> handlerNoFoundException(NoHandlerFoundException e) {
         log.error(e.getMessage(), e);
         return Result.notFound( "路径不存在，请检查路径是否正确");
     }
@@ -133,11 +132,11 @@ public class GlobalExceptionHandler {
     }
 
 
-    //@ExceptionHandler(Exception.class)
-    //public Result<String> handleException(Exception e) {
-    //    log.error(e.getMessage(), e);
-    //    return Result.error(ResultConstant.SYS_ERROR);
-    //}
+    @ExceptionHandler(Exception.class)
+    public Result<String> handleException(Exception e) {
+        log.error(e.getMessage(), e);
+        return Result.error(ResultEnum.SYS_ERROR.msg);
+    }
 
     private Result<String> sentinelExceptionHandler(RuntimeException undeclared) {
         Throwable throwable = ((UndeclaredThrowableException) undeclared).getUndeclaredThrowable();

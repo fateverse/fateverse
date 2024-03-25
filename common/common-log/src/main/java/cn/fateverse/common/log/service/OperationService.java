@@ -11,10 +11,12 @@ import com.alibaba.fastjson2.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,14 +37,23 @@ public class OperationService {
     @DubboReference
     private DubboLogService logService;
 
+
+    private final String applicationName;
+
     private final OperationProperties properties;
 
 
     private final List<OperationLog> operationLogListCache;
 
-    public OperationService(OperationProperties properties) {
+    public OperationService(OperationProperties properties, Environment environment) {
         this.properties = properties;
         this.operationLogListCache = new ArrayList<>(properties.getCacheSize());
+        String applicationName = environment.getProperty("spring.application.name");
+        if (ObjectUtils.isEmpty(applicationName)) {
+            log.error("applicationName can not be null");
+            throw new RuntimeException("applicationName can not be null");
+        }
+        this.applicationName = applicationName;
     }
 
 
@@ -62,6 +73,7 @@ public class OperationService {
     @Async
     public void asyncExecute(OperationLog operationLog, Object jsonResult, Throwable e, Long time) {
         operationLog.setState(BusinessState.SUCCESS.ordinal());
+        operationLog.setApplicationName(applicationName);
         // 返回参数
         if (jsonResult instanceof Result) {
             Result<Object> result = (Result<Object>) jsonResult;

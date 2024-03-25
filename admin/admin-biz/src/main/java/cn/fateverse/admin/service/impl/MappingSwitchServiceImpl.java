@@ -1,16 +1,13 @@
 package cn.fateverse.admin.service.impl;
 
-import cn.fateverse.admin.dto.MappingSwitchDto;
+import cn.fateverse.admin.entity.dto.MappingSwitchDto;
 import cn.fateverse.admin.entity.vo.MappingSwitchVo;
 import cn.fateverse.admin.query.MappingSwitchQuery;
 import cn.fateverse.admin.service.MappingSwitchService;
-import cn.fateverse.common.core.constant.UserConstants;
 import cn.fateverse.common.core.entity.PageInfo;
 import cn.fateverse.common.core.exception.CustomException;
 import cn.fateverse.common.core.result.page.TableDataInfo;
-import cn.fateverse.common.core.utils.ReflectUserUtils;
 import cn.fateverse.common.core.utils.TableSupport;
-import cn.fateverse.common.log.enums.OperateType;
 import cn.fateverse.common.mybatis.utils.PageUtils;
 import cn.fateverse.common.security.entity.MappingSwitchInfo;
 import cn.fateverse.common.security.utils.SecurityUtils;
@@ -19,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 

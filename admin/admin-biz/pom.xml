@@ -39,11 +39,6 @@
             <groupId>cn.fateverse</groupId>
             <artifactId>common-file</artifactId>
         </dependency>
-        <!--seata 分布式事务-->
-        <dependency>
-            <groupId>cn.fateverse</groupId>
-            <artifactId>common-seata</artifactId>
-        </dependency>
         <dependency>
             <groupId>cn.fateverse</groupId>
             <artifactId>common-excel</artifactId>

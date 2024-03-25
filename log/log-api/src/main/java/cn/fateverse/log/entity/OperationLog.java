@@ -28,6 +28,11 @@ public class OperationLog implements Serializable {
     private Long userId;
 
     /**
+     * 应用名称
+     */
+    private String applicationName;
+
+    /**
      * 操作模块
      */
     private String title;

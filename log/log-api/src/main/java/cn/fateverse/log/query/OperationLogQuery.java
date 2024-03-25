@@ -1,7 +1,6 @@
 package cn.fateverse.log.query;
 
 import cn.fateverse.common.core.entity.QueryTime;
-import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 
@@ -12,13 +11,14 @@ import lombok.Data;
  * @Version: V2.0
  */
 @Data
-@ApiModel("日志查询实体")
 public class OperationLogQuery extends QueryTime {
 
     /**
      *  系统模块
      */
     private String title;
+
+    private String applicationName;
 
     /**
      *  操作人员

@@ -32,6 +32,8 @@ public class OperationLogVo implements Serializable {
      */
     private String title;
 
+    private String applicationName;
+
     /**
      * 业务类型（0其它 1新增 2修改 3删除）
      */
@@ -111,6 +113,7 @@ public class OperationLogVo implements Serializable {
     public static OperationLogVo toOperationLogVo(OperationLog operationLog) {
         return OperationLogVo.builder()
                 .operId(operationLog.getOperId())
+                .applicationName(operationLog.getApplicationName())
                 .title(operationLog.getTitle())
                 .businessType(operationLog.getBusinessType())
                 .method(operationLog.getMethod())
