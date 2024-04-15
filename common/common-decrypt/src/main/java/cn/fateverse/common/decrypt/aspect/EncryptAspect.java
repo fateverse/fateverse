@@ -117,7 +117,9 @@ public class EncryptAspect {
                     String decrypt = encryptService.encrypt((String) value);
                     ReflectionUtils.setField(field, data, decrypt);
                 } else if (field.getType().getName().startsWith(BASE_PACKAGE)) {
-                    encrypt(value);
+                    if (!value.getClass().isEnum()){
+                        encrypt(value);
+                    }
                 } else if (value instanceof Collection) {
                     Collection<Object> collection = (Collection<Object>) value;
                     for (Object item : collection) {
@@ -148,7 +150,9 @@ public class EncryptAspect {
                 String decrypt = encryptService.decrypt((String) value);
                 ReflectionUtils.setField(field, arg, decrypt);
             } else if (field.getType().getName().startsWith(BASE_PACKAGE)) {
-                decrypt(value);
+                if (!value.getClass().isEnum()){
+                    decrypt(value);
+                }
             }
         }
     }
