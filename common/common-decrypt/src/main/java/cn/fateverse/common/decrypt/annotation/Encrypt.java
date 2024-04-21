@@ -12,4 +12,23 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Encrypt {
+
+    Position value() default Position.ALL;
+
+
+    EncryptType type() default EncryptType.SM4;
+
+
+    enum EncryptType {
+
+        SM4,
+
+    }
+
+    enum Position {
+        ALL,
+        OUT,
+        IN
+    }
+
 }
