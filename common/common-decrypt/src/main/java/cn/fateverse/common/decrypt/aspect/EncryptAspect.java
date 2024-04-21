@@ -132,7 +132,9 @@ public class EncryptAspect {
                 if (null == value) {
                     continue;
                 }
-                if (null != encryptField && value instanceof String) {
+                if (null != encryptField && value instanceof String
+                        && (EncryptField.Position.ALL.equals(encryptField.value())
+                        || EncryptField.Position.IN.equals(encryptField.value()))) {
                     String decrypt = encryptService.encrypt((String) value);
                     ReflectionUtils.setField(field, data, decrypt);
                 } else if (field.getType().getName().startsWith(BASE_PACKAGE)) {
@@ -166,7 +168,9 @@ public class EncryptAspect {
             if (null == value) {
                 continue;
             }
-            if (null != encryptField && value instanceof String) {
+            if (null != encryptField && value instanceof String
+                    && (EncryptField.Position.ALL.equals(encryptField.value())
+                    || EncryptField.Position.OUT.equals(encryptField.value()))) {
                 String decrypt = encryptService.decrypt((String) value);
                 ReflectionUtils.setField(field, arg, decrypt);
             } else if (field.getType().getName().startsWith(BASE_PACKAGE)) {

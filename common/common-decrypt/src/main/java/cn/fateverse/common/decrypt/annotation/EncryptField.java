@@ -11,4 +11,12 @@ import java.lang.annotation.Target;
 @Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EncryptField {
+
+    Position value() default Position.ALL;
+
+    enum Position {
+        ALL,
+        OUT,
+        IN
+    }
 }
