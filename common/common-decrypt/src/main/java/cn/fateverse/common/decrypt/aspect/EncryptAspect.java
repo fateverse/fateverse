@@ -16,6 +16,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -180,12 +181,7 @@ public class EncryptAspect {
     private void getFields(Class<?> argClass, List<Field> fieldList) {
         if (argClass.getTypeName().startsWith(BASE_PACKAGE)) {
             Field[] fields = argClass.getDeclaredFields();
-            for (Field field : fields) {
-                EncryptField encryptField = field.getAnnotation(EncryptField.class);
-                if (null != encryptField) {
-                    fieldList.add(field);
-                }
-            }
+            fieldList.addAll(Arrays.asList(fields));
             getFields(argClass.getSuperclass(), fieldList);
         }
     }
