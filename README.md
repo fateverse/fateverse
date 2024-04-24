@@ -21,12 +21,12 @@
 
 | 依赖                   | 版本         |
 |----------------------|------------|
-| Spring Boot          | 2.7.5      |
+| Spring Boot          | 2.7.3      |
 | Spring Cloud         | 2021.0.5   |
 | Spring Cloud Alibaba | 2021.0.4.0 |
 | Mybatis              | 3.5.2      |
 | Vue                  | 3.1.3      |
-| React                | 3.1.3      |
+| React                | 18.2.0     |
 
 ### 模块说明
 
