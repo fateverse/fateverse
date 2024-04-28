@@ -1,5 +1,7 @@
 package cn.fateverse.common.code.sandbox;
 
+import cn.fateverse.common.code.engine.JavaCodeEngine;
+
 import java.io.FilePermission;
 import java.lang.reflect.ReflectPermission;
 import java.security.Permission;
@@ -9,9 +11,9 @@ import java.util.Set;
 
 public class SandboxSecurityManager extends SecurityManager {
 
-    private final Map<String, Class<?>> classCache;
+    private final Map<String, JavaCodeEngine.CacheWrapper> classCache;
 
-    public SandboxSecurityManager(Map<String, Class<?>> classCache) {
+    public SandboxSecurityManager(Map<String, JavaCodeEngine.CacheWrapper> classCache) {
         this.classCache = classCache;
     }
 
@@ -38,7 +40,7 @@ public class SandboxSecurityManager extends SecurityManager {
 
     private boolean isAllowedPermission(Permission permission) {
         //权限：用于校验文件系统访问权限，包括读取、写入、删除文件，以及目录操作。权限名称可能包括文件路径和操作，如 "read", "write", "delete", "execute" 等。
-        if (permission instanceof FilePermission){
+        if (permission instanceof FilePermission) {
             System.out.println("触发文件读写权限");
             return false;
         }

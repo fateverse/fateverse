@@ -6,6 +6,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
 /**
+ * 分段锁对象
+ *
  * @author Clay
  * @date 2023-10-25
  */
@@ -15,10 +17,11 @@ public class SegmentLock {
 
     /**
      * 分段锁
-     * @param key 锁名称
+     *
+     * @param key      锁名称
      * @param supplier 需要执行的函数
+     * @param <T>      接收泛型
      * @return 执行后的结果
-     * @param <T> 接收泛型
      */
     public static <T> T lock(String key, Supplier<T> supplier) {
         ReentrantLock lock = lockMap.get(key);

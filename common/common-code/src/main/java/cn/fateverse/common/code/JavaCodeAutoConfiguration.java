@@ -13,8 +13,8 @@ import org.springframework.context.annotation.Bean;
 public class JavaCodeAutoConfiguration {
 
     @Bean
-    public JavaCodeEngine javaCodeEngine(JavaCodeProperties javaCodeProperties){
-        return new JavaCodeEngine(javaCodeProperties);
+    public JavaCodeEngine javaCodeEngine(JavaCodeProperties javaCodeProperties) {
+        return new JavaCodeEngine(javaCodeProperties.getClassPath());
     }
 
 
